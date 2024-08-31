@@ -12,22 +12,18 @@ class MainFrame(ctk.CTkFrame):
         Класс- контейнер, формирует область со скролом для добавления товаров
         """
 
-        def __init__(self, master, name_product, count_product, category, **kwargs):
+        def __init__(self, master, **kwargs):
             super().__init__(master, **kwargs)
             self.product = None
 
-            self.name_product = name_product
-            self.count_product = count_product
-            self.category = category
+        def create_check_box(self, name_product, count_product, category):
+            print(name_product)
 
-        def create_check_box(self):
-            print(self.name_product)
+            print(count_product)
 
-            print(self.count_product)
+            print(category)
 
-            print(self.category)
-
-            self.product = ctk.CTkCheckBox(self, text=f'{self.name_product}, {self.count_product}, {self.category}',
+            self.product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}',
                                       font=('Helvetica', 18, 'bold'),
                                       hover_color='#453E3E', fg_color='#434141', border_width=1)
 
@@ -155,8 +151,10 @@ class MainFrame(ctk.CTkFrame):
 
         assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
 
-        scroll = MainFrame.ScrollAddProducts(self, self.name_product, self.count_product, self.category)
-        scroll.create_check_box()
+        scroll = MainFrame.ScrollAddProducts(self)
+
+        scroll.create_check_box(self.name_product, self.count_product, self.category)
+
         return True
 
     def add_category_button_click_handler(self) -> None:
