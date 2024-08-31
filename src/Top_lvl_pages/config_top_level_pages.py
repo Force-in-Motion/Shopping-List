@@ -1,0 +1,129 @@
+'-------AddNewCategory-------'
+
+'config window'
+gt_cw_anc = "600x270+750+200"
+ttl_cw_anc = 'Новая категория'
+wh_rzb = False
+ht_rzb = False
+
+
+'config_input_field'
+pht_if = 'Введите название категории'
+phtc_if = '#706C6C'
+wh_if = 350
+ht_if = 40
+fgc_if = 'white'
+ft_if = ('Helvetica', 15, 'bold')
+
+
+'config logo'
+size_l = (170, 120)
+tt_l = ''
+
+
+'config buttons (AddNewCategory, AddProduct)'
+tt_sb = "Сохранить"
+wh_sb = 200
+ht_sb = 50
+fgc_sb = '#CD5C5C'
+tc_sb = 'white'
+bw_sb = 1
+hc_sb = '#783D3D'
+ft_sb = ('Helvetica', 15, 'bold')
+
+tt_cb = "Отмена"
+wh_cb = 200
+ht_cb = 50
+fgc_cb = '#CD5C5C'
+tc_cb = 'white'
+bw_cb = 1
+hc_cb = '#783D3D'
+ft_cb = ('Helvetica', 15, 'bold')
+
+
+
+
+'-------AddReminder-------'
+ttl_ar = 'Установка напоминания'
+
+
+
+
+'-------AddProduct-------'
+
+'config window'
+gt_cw_ap = "800x270+750+200"
+ttl_cw_ap = 'Данные о товаре'
+
+
+
+'config input fields'
+pht_np = 'Введите название товара'
+phtc_np = '#706C6C'
+wh_np = 250
+ht_np = 40
+fgc_np = 'white'
+ft_np = ('Helvetica', 15, 'bold')
+
+
+pht_cp = 'Количество'
+phtc_cp = '#706C6C'
+wh_cp = 100
+ht_cp = 40
+fgc_cp = 'white'
+ft_cp = ('Helvetica', 15, 'bold')
+
+
+'config category list'
+tc_c = '#706C6C'
+wh_c = 150
+ht_c = 40
+fgc_c = 'white'
+ft_c = ('Helvetica', 15, 'bold')
+st_c = 'readonly'
+bc_c = '#3D3935'
+values_c = ['Спорт. Товары', 'Сад и огород', 'Охота и Рыбалка', 'Строй. Материалы', 'Игрушки', 'Канц. Товары', 'Продукты питания',
+                                        'Хоз. Товары', 'Одежда', 'Мебель', 'Электроника', 'Инструменты', 'Бытовая химия', 'Техника', 'Для животных']
+
+
+
+
+
+'-------ConfirmationPage--------'
+
+'config window'
+ttl_cp = ''
+gt_cp = '500x200+800+200'
+
+
+'config confirm label'
+wh_cl = 70
+ht_cl = 20
+tt_cl = 'Вы уверены?'
+tc_cl = 'white'
+ft_cl = ('Helvetica', 30, 'bold')
+
+
+'config button menu'
+wh_cmb = 150
+ht_cmb = 50
+tt_cmb = "Да"
+fgc_cmb = '#CD5C5C'
+tc_cmb = 'white'
+bw_cmb = 1
+hc_cmb = '#783D3D'
+ft_cmb = ('Helvetica', 18, 'bold')
+
+tt_clb = "Отмена"
+wh_clb = 150
+ht_clb = 50
+fgc_clb = '#CD5C5C'
+tc_clb = 'white'
+bw_clb = 1
+hc_clb = '#783D3D'
+ft_clb = ('Helvetica', 18, 'bold')
+
+
+path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
+
+
