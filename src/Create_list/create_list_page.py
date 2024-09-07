@@ -1,53 +1,107 @@
-from tkinter.messagebox import showerror
-from src.save_and_load_data import *
 from src.Top_lvl_pages.top_lvl_pages import *
+from tkinter.messagebox import showerror
+from src.save_and_load_data import SaveAndLoadData as sld
 from src.Create_list.config_create_list import *
 import customtkinter as ctk
 from PIL import Image
 
 
-class MainFrame(ctk.CTkFrame):
-    class ScrollAddProducts(ctk.CTkScrollableFrame):
-        """
-        Класс- контейнер, формирует область со скролом для добавления товаров
-        """
+class ScrollAddProducts(ctk.CTkScrollableFrame):
+    """
+    Класс- контейнер, формирует область со скролом для добавления товаров
+    """
 
-        def __init__(self, master, **kwargs):
-            super().__init__(master, **kwargs)
-            self.product = None
-
-        def create_check_box(self, name_product, count_product, category):
-            print(name_product)
-
-            print(count_product)
-
-            print(category)
-
-            self.product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}',
-                                      font=('Helvetica', 18, 'bold'),
-                                      hover_color='#453E3E', fg_color='#434141', border_width=1)
-
-            self.product.grid(padx=(10, 0), pady=10)
-
-    def __init__(self, master, **kwargs):
+    def __init__(self, main_window, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.__main_window = main_window
+        self.__product = None
+        self.__count_check_boxes = 0
+        self.__list_check_boxes = []
+
+    def create_check_box(self, name_product, count_product, category):
+
+        self.__product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}', font=ft_p,
+                                         hover_color=hc_p, fg_color=fgc_p, border_width=bw_p)
+        self.__count_check_boxes += 1
+        self.__list_check_boxes.append(self.__product)
+        self.__product.grid(padx=(10, 0), pady=10)
+
+    def set_new_text_for_check_box(self, checkbox,  new_text):
+        if checkbox is not None:
+            checkbox.configure(text=new_text)
+
+    def check_selected_check_box(self):
+        for checkbox in self.__list_check_boxes:
+            if checkbox.get() == 1:
+                return True
+        return False
+
+    def delete_check_box(self):
+        text, checkbox = self.get_selected_check_box()
+
+        for checkbox in self.__list_check_boxes:
+            if checkbox.cget("text") == text:
+                checkbox.destroy()
+
+        self.__count_check_boxes -= 1
+
+    def get_selected_check_box(self):
+        for checkbox in self.__list_check_boxes:
+            if checkbox.get() == 1:
+                return checkbox.cget("text"), checkbox
+
+    def __get_count_check_boxes(self):
+        return self.__count_check_boxes
+
+    count_check_boxes = property(__get_count_check_boxes)
+
+
+class CreateList(ctk.CTkToplevel):
+    """
+    Мэйн класс страницы, в себе формирует контейнеры (фреймы), содержащие остальные виджеты страницы
+    """
+    def __init__(self, main_window):
+        super().__init__()
+
+        self.__main_window = main_window
+
         self.__name_shopping_list = None
         self.__name_product = None
         self.__count_product = None
         self.__category_product = None
-        self.__label_add_product = None
-        self.__confirmation_request = None
 
+        self.__label_add_product = None
+
+        self.__confirmation_request_page = None
         self.__add_category_page = None
         self.__edit_product_page = None
 
+        self.__scroll_frame = None
+
+        self.__list_products = []
+        self.__list_categories = sld.read_categories_with_json()
+
         self.__config_logo()
         self.__config_input_fields()
-        self.__config_category_place()
+        self.__config_category_list()
         self.__config_add_buttons()
         self.__config_label_add_product()
-        self.__config_buttons_menu()
         self.__config_scroll_frame()
+        self.__config_buttons_menu()
+        self.__config_window()
+
+        if sld.check_file():
+            self.__load_data = sld.read_data_with_json()
+        else:
+            self.__load_data = {}
+
+    def __config_window(self) -> None:
+        """
+        Формирует параметры и стили главного окна приложения
+        """
+        self.title(ttl)
+        self.geometry(gt)
+        self.resizable(rb_wh, rb_ht)
 
     def __config_logo(self) -> None:
         """
@@ -67,20 +121,20 @@ class MainFrame(ctk.CTkFrame):
 
         self.__name_product = ctk.CTkEntry(self, placeholder_text=pht_np, placeholder_text_color=phtc_np,
                                               width=wh_np, height=ht_np, fg_color=fgc_np, font=ft_np, text_color=ptc_nsl)
-        self.__name_product.place(relx=0.035, rely=0.12)
+        self.__name_product.place(relx=0.035, rely=0.125)
 
         self.__count_product = ctk.CTkEntry(self, placeholder_text=pht_cp, placeholder_text_color=phtc_cp,
                                               width=wh_cp, height=ht_cp, fg_color=fgc_cp, font=ft_cp, text_color=ptc_nsl)
-        self.__count_product.place(relx=0.33, rely=0.12)
+        self.__count_product.place(relx=0.33, rely=0.125)
 
-    def __config_category_place(self) -> None:
+    def __config_category_list(self) -> None:
         """
         Формирует в себе категории товара
         """
         self.__category_product = ctk.CTkComboBox(self,  text_color=tc_c,  width=wh_c, height=ht_c, fg_color=fgc_c, font=ft_c,
                                         state=st_c, button_color=bc_c, )
-        self.__category_product.configure(values=val_c)
-        self.__category_product.place(relx=0.457, rely=0.12)
+        self.__category_product.configure(values=self.__list_categories.get("cs"))
+        self.__category_product.place(relx=0.457, rely=0.125)
 
     def __config_label_add_product(self) -> None:
         """
@@ -133,66 +187,110 @@ class MainFrame(ctk.CTkFrame):
         """
         Формирует параметры и стили контейнера для добавления товаров
         """
-        self.__scroll_frame = self.ScrollAddProducts(self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
-        self.__scroll_frame.pack(pady=250, padx=(30, 240))
+        self.__scroll_frame = ScrollAddProducts(self, master=self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
+        self.__scroll_frame.place(relx=0.04, rely=0.35)
 
     def add_product_button_click_handler(self) -> bool or showerror:
         """
         Обрабатывает клик по кнопке добавления товара в список
         """
-
-        print(self.name_product)
-
-        print(self.count_product)
-
-        print(self.category)
-
         assert self.name_product != '' and self.count_product != '' and self.category != '', showerror('Ошибка', 'Заполните все поля')
 
         assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
 
-        scroll = MainFrame.ScrollAddProducts(self)
+        product = [self.name_product, self.count_product, self.category]
 
-        scroll.create_check_box(self.name_product, self.count_product, self.category)
+        self.__list_products.append(product)
+
+        self.__scroll_frame.create_check_box(self.name_product, self.count_product, self.category)
 
         return True
+
+    def update_load_data(self, old_text, new_text):
+        for i in range(0, len(self.__list_products), 1):
+
+            for s in range(0, len(self.__list_products[i]), 1):
+
+                if f"{self.__list_products[i][0]}, {self.__list_products[i][1]}, {self.__list_products[i][2]}" == old_text:
+
+                    self.__list_products[i][0], self.__list_products[i][1], self.__list_products[i][2] = new_text.split(", ")
+
+                    return
 
     def add_category_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке добавления новой категории товара
         """
-        if self.__add_category_page is None or not self.__add_category_page.winfo_exists():
-            self.__add_category_page = AddNewCategory(self)
-
-        self.__add_category_page.focus()
+        self.__add_category_page = AddNewCategory(self)
+        self.withdraw()
 
     def save_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
+        assert self.__scroll_frame.count_check_boxes != 0, showerror('Ошибка', 'Добавьте товар или нажмите "Отмена"')
 
-        SaveAndLoadData.write_data_with_json()
+        assert self.name_shopping_list != '', showerror('Ошибка', 'Добавьте название списка покупок или нажмите "Отмена"')
+
+        sld.create_folder()
+
+        self.__load_data[self.name_shopping_list] = self.__list_products
+
+        sld.write_data_in_json(self.__load_data)
+
+        self.__main_window.deiconify()
+
+        self.destroy()
 
     def edit_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке редактирования товара
         """
-        if self.__edit_product_page is None or not self.__edit_product_page.winfo_exists():
-            self.__edit_product_page = AddProduct(self)
+        assert self.__scroll_frame.count_check_boxes != 0, showerror('Ошибка', 'Список товаров пуст, редактировать нечего')
 
-        self.__edit_product_page.focus()
+        if not self.__scroll_frame.check_selected_check_box():
+            showerror('Ошибка', 'Выберите товар для редактирования')
+            return
+
+        self.__edit_product_page = AddProduct(self, self.__scroll_frame)
+
+        self.withdraw()
+
+    def del_target_product_from_list_products(self):
+        text, check_box = self.__scroll_frame.get_selected_check_box()
+
+        for i in range(0, len(self.__list_products), 1):
+
+            for s in range(0, len(self.__list_products[i]), 1):
+
+                if f"{self.__list_products[i][0]}, {self.__list_products[i][1]}, {self.__list_products[i][2]}" == text:
+                    del self.__list_products[i]
+
+                    return
 
     def del_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления товара
         """
-        pass
+        assert self.__scroll_frame.count_check_boxes != 0, showerror('Ошибка', 'Список товаров пуст, удалять нечего')
+
+        if not self.__scroll_frame.check_selected_check_box():
+            showerror('Ошибка', 'Выберите товар для удаления')
+            return
+
+        print(self.__list_products)
+
+        self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_frame)
+
+        self.withdraw()
+
 
     def cancel_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
-        pass
+        self.__main_window.deiconify()
+        self.destroy()
 
     def __get_name_shopping_list(self):
         return self.__name_shopping_list.get()
@@ -206,37 +304,11 @@ class MainFrame(ctk.CTkFrame):
     def __get_category_product(self):
         return self.__category_product.get()
 
+    def __get_list_products(self):
+        return self.__list_products
+
     name_shopping_list = property(__get_name_shopping_list)
     name_product = property(__get_name_product)
     count_product = property(__get_count_product)
     category = property(__get_category_product)
-
-
-class AddList(ctk.CTkToplevel):
-    """
-    Мэйн класс страницы, в себе формирует контейнеры (фреймы), содержащие остальные виджеты страницы
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.__config_window()
-        self.__config_main_frame()
-
-    def __config_window(self) -> None:
-        """
-        Формирует параметры и стили главного окна приложения
-        """
-        self.title(ttl)
-        self.geometry(gt)
-        self.resizable(rb_wh, rb_ht)
-
-    def __config_main_frame(self) -> None:
-        """
-        Формирует параметры и стили контейнера для добавления элементов товара, а так же кнопок добавления товара и добавления новой категории
-        """
-        self.__main_frame = MainFrame(self, width=wh_slc, height=ht_slc, fg_color=fgc_slc, corner_radius=cr_slc)
-        self.__main_frame.pack()
-        self.__main_frame.pack_propagate(False)
-
-
-
+    list_products = property (__get_list_products)

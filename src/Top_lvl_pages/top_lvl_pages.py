@@ -1,15 +1,20 @@
 import customtkinter as ctk
 from PIL import Image
 from src.Top_lvl_pages.config_top_level_pages import *
+from src.save_and_load_data import SaveAndLoadData as sld
+from tkinter.messagebox import showerror
 
 
 class AddNewCategory(ctk.CTkToplevel):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+        self.__list_categories = sld.read_categories_with_json()
+
         self.__input_field = None
 
         self.__config_logo()
@@ -30,14 +35,14 @@ class AddNewCategory(ctk.CTkToplevel):
         Формирует в себе поля ввода данных пользователя
         """
         self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_if, placeholder_text_color=phtc_if,
-                                              width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if)
+                                              width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
         self.__input_field.place(relx=0.05, rely=0.2)
 
     def __config_logo(self):
         """
         Формирует параметры и стили главного логотипа приложения
         """
-        self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size_l)
+        self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size_ltl)
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.67, rely=0.1)
 
@@ -59,13 +64,30 @@ class AddNewCategory(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        pass
+        assert self.input_data != '', showerror('Ошибка', 'Пустая строка не может быть принята')
+
+        self.__list_categories["cs"].append(self.input_data)
+
+        sld.write_categories_in_json(self.__list_categories)
+
+        self.__main_window.deiconify()
+
+        self.__main_window._CreateList__category_product.configure(values=self.__list_categories.get("cs"))
+
+        self.destroy()
 
     def cancel_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
-        pass
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+    def __get_input_field_data(self):
+        return self.__input_field.get()
+
+    input_data = property(__get_input_field_data)
 
 
 class AddReminder(AddNewCategory):
@@ -78,15 +100,22 @@ class AddProduct(ctk.CTkToplevel):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, scroll_frame, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__name_product = None
         self.__count_product = None
+        self.__category_product = None
+
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
+
+        self.__list_categories = sld.read_categories_with_json()
 
         self.__config_window()
         self.__config_logo()
         self.__config_input_fields()
         self.__config_buttons_menu()
+        self.__config_category_list()
 
     def __config_window(self):
         """
@@ -100,11 +129,11 @@ class AddProduct(ctk.CTkToplevel):
         Формирует в себе поля ввода данных пользователя
         """
         self.__name_product = ctk.CTkEntry(self, placeholder_text=pht_np, placeholder_text_color=phtc_np,
-                                         width=wh_np, height=ht_np, fg_color=fgc_np, font=ft_np)
+                                         width=wh_np, height=ht_np, fg_color=fgc_np, font=ft_np, text_color=tc_np)
         self.__name_product.place(relx=0.04, rely=0.2)
 
         self.__count_product = ctk.CTkEntry(self, placeholder_text=pht_cp, placeholder_text_color=phtc_cp,
-                                          width=wh_cp, height=ht_cp, fg_color=fgc_cp, font=ft_cp)
+                                          width=wh_cp, height=ht_cp, fg_color=fgc_cp, font=ft_cp, text_color=tc_cp)
         self.__count_product.place(relx=0.373, rely=0.2)
 
     def __config_category_list(self):
@@ -112,16 +141,16 @@ class AddProduct(ctk.CTkToplevel):
         Формирует в себе список, доступных по умолчанию, категорий товара
         :return:
         """
-        self.__category = ctk.CTkComboBox(self,  text_color=tc_c,  width=wh_c, height=ht_c, fg_color=fgc_c, font=ft_c,
+        self.__category_product = ctk.CTkComboBox(self,  text_color=tc_c,  width=wh_c, height=ht_c, fg_color=fgc_c, font=ft_c,
                                         state=st_c, button_color=bc_c)
-        self.__category.configure(values=values_c)
-        self.__category.place(relx=0.52, rely=0.2)
+        self.__category_product.configure(values=self.__list_categories.get("cs"))
+        self.__category_product.place(relx=0.52, rely=0.2)
 
     def __config_logo(self):
         """
         Формирует параметры и стили главного логотипа приложения
         """
-        self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size_l)
+        self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size_ltl)
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.75, rely=0.1)
 
@@ -141,26 +170,61 @@ class AddProduct(ctk.CTkToplevel):
         self.__cancel_btn.configure(command=self.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.71, rely=0.7)
 
+    def edit_data_check_box(self):
+        new_text = f'{self.new_name_product}, {self.new_count_product}, {self.new_category}'
+
+        old_text, check_box = self.__scroll_frame.get_selected_check_box()
+
+        self.__main_window.update_load_data(old_text, new_text)
+
+        self.__scroll_frame.set_new_text_for_check_box(check_box, new_text)
+
     def save_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        pass
+        assert self.new_name_product != '' and self.new_count_product != '' and self.new_category != '', showerror('Ошибка', 'Заполните все поля')
+
+        assert self.new_count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
+
+        self.edit_data_check_box()
+
+        self.__main_window.deiconify()
+
+        self.destroy()
 
     def cancel_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
-        pass
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+    def __get_name_product(self):
+        return self.__name_product.get()
+
+    def __get_count_product(self):
+        return self.__count_product.get()
+
+    def __get_category_product(self):
+        return self.__category_product.get()
+
+    new_name_product = property(__get_name_product)
+    new_count_product = property(__get_count_product)
+    new_category = property(__get_category_product)
 
 
 class ConfirmationPage(ctk.CTkToplevel):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self,  main_window, scroll_frame, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__text_label = None
+
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
 
         self.__config_window()
         self.__config_label_confirm()
@@ -194,15 +258,23 @@ class ConfirmationPage(ctk.CTkToplevel):
         self.__cancel_btn.configure(command=self.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.64, rely=0.6)
 
-    def confirm_button_click_handler(self) -> None:
+    def confirm_button_click_handler(self) -> bool:
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        pass
+        self.__main_window.del_target_product_from_list_products()
+        self.__scroll_frame.delete_check_box()
+
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+        return True
 
     def cancel_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
-        pass
+        self.__main_window.deiconify()
+        self.destroy()
 

@@ -1,3 +1,4 @@
+from tkinter.messagebox import showerror
 from src.Main_page.config_main_page import *
 from src.All_lists.all_shoping_lists import *
 from src.Create_list.create_list_page import *
@@ -7,28 +8,36 @@ from src.Favorite_products.config_favorite_products import *
 from src.Purchase_history.purchase_history import *
 from src.Purchase_history.config_purchase_history import *
 from src.All_lists.config_all_lists import *
-from tkinter.messagebox import showerror
 import customtkinter as ctk
 from PIL import Image
 import sys
 
 
-class MainFrame(ctk.CTkFrame):
+class MainPage(ctk.CTk):
     """
-    Класс- контейнер, формирует в себе поле ввода, а так же кнопки, отвечающие за функционал приложения и их обработчики
+    Мэйн класс приложения, в себе формирует основной контейнер (фрейм), содержащий остальные виджеты страницы
     """
-    def __init__(self, master, **kwargs) -> None:
-        super().__init__(master, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.__input_field = None
         self.__all_list_page = None
         self.__add_list_page = None
         self.__favorite_products_page = None
         self.__history_page = None
 
+        self.__config_window()
         self.__config_menu_buttons()
         self.__config_exit_button()
         self.__config_input_field()
         self.__config_logo()
+
+    def __config_window(self) -> None:
+        """
+        Формирует параметры и стили главного окна приложения
+        """
+        self.title(ttl_mp)
+        self.geometry(gmt)
+        self.resizable(rsb_wh, rsb_ht)
 
     def __config_menu_buttons(self) -> None:
         """
@@ -82,68 +91,29 @@ class MainFrame(ctk.CTkFrame):
         """
         Обрабатывает клик по кнопке добавления список покупок
         """
-        if self.__check_opened_page():
-            self.__add_list_page = AddList()
-
-        self.__add_list_page.focus()
+        self.__add_list_page = CreateList(self)
+        self.withdraw()
 
     def all_lists_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "мои списки"
         """
-        if self.__check_opened_page():
-            self.__all_list_page = AllLists()
-
-        self.__all_list_page.focus()
+        self.__all_list_page = AllLists()
+        self.withdraw()
 
     def favorites_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "избранное"
         """
-        if self.__check_opened_page():
-            self.__favorite_products_page = FavoriteProducts()
-
-        self.__favorite_products_page.focus()
+        self.__favorite_products_page = FavoriteProducts()
+        self.withdraw()
 
     def history_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "история покупок"
         """
-        if self.__check_opened_page():
-            self.__history_page = PurchaseHistory()
-
-        self.__history_page.focus()
-
-    def __check_opened_page(self) -> bool:
-        if self.__history_page is None and self.__favorite_products_page is None and self.__all_list_page is None and self.__add_list_page is None:
-            return True
-
-        return False
-
-
-class MainPage(ctk.CTk):
-    """
-    Мэйн класс приложения, в себе формирует основной контейнер (фрейм), содержащий остальные виджеты страницы
-    """
-    def __init__(self):
-        super().__init__()
-        self.__config_window()
-        self.__config_main_frame()
-
-    def __config_window(self) -> None:
-        """
-        Формирует параметры и стили главного окна приложения
-        """
-        self.title(ttl_mp)
-        self.geometry(gmt)
-        self.resizable(rsb_wh, rsb_ht)
-
-    def __config_main_frame(self) -> None:
-        """
-        Формирует параметры и стили основного контейнера (фрейма), содержащего остальные виджеты страницы
-        """
-        self.__main_frame = MainFrame(self, width=wh_f, height=ht_f, fg_color=fgc_f, corner_radius=cr_f)
-        self.__main_frame.pack()
+        self.__history_page = PurchaseHistory()
+        self.withdraw()
 
     @staticmethod
     def run_window():

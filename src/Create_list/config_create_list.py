@@ -1,4 +1,4 @@
-'-------ShopingListConfig-------'
+'-------ShoppingListData-------'
 
 'config logo'
 size_l = (220, 180)
@@ -35,8 +35,6 @@ fgc_c = 'white'
 ft_c = ('Helvetica', 15, 'bold')
 st_c = 'readonly'
 bc_c = '#3D3935'
-val_c = ['Спорт. Товары', 'Сад и огород', 'Охота и Рыбалка', 'Строй. Материалы', 'Игрушки', 'Канц. Товары', 'Продукты питания',
-                    'Хоз. Товары', 'Одежда', 'Мебель', 'Электроника', 'Инструменты', 'Бытовая химия', 'Техника', 'Для животных']
 
 
 'config label add product'
@@ -62,7 +60,7 @@ fgc_acb = 'transparent'
 hc_acb = '#262424'
 
 
-'-------ButtonsMenuAddList-------'
+'-------ButtonsMenuCreateList-------'
 
 'config buttons meny'
 wh_bm = 150
@@ -79,7 +77,7 @@ tt_d = "Удалить"
 tt_c = "Отмена"
 
 
-'-------AddList-------'
+'-------CreateList-------'
 
 'config window'
 ttl = 'Создание списка покупок'
@@ -89,10 +87,10 @@ rb_ht = False
 
 
 'config frames'
-wh_slc = 900
-ht_slc = 700
-fgc_slc = 'transparent'
-cr_slc = 0
+wh_sld = 900
+ht_sld = 250
+fgc_sld = 'transparent'
+cr_sld= 0
 
 wh_sp = 600
 ht_sp = 300
@@ -100,9 +98,21 @@ fgc_sp = 'transparent'
 cr_sp = 0
 
 w_bm = 900
-h_bm = 100
+h_bm = 130
 fg_bm = 'transparent'
 cr_bm = 0
+
+wh_mf = 900
+ht_mf = 700
+fgc_mf = 'transparent'
+cr_mf = 0
+
+
+'-------ScrollAddProducts-------'
+ft_p = ('Helvetica', 18, 'bold')
+hc_p = '#453E3E'
+fgc_p = '#434141'
+bw_p = 1
 
 path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
 path_round_button = r'D:\Python\School\Проекты\Shopping-List\Images\round_button.png'

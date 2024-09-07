@@ -10,6 +10,7 @@ ht_rzb = False
 'config_input_field'
 pht_if = 'Введите название категории'
 phtc_if = '#706C6C'
+tc_nsl = '#706C6C'
 wh_if = 350
 ht_if = 40
 fgc_if = 'white'
@@ -17,7 +18,7 @@ ft_if = ('Helvetica', 15, 'bold')
 
 
 'config logo'
-size_l = (170, 120)
+size_ltl = (170, 140)
 tt_l = ''
 
 
@@ -64,6 +65,7 @@ wh_np = 250
 ht_np = 40
 fgc_np = 'white'
 ft_np = ('Helvetica', 15, 'bold')
+tc_np = '#706C6C'
 
 
 pht_cp = 'Количество'
@@ -72,6 +74,7 @@ wh_cp = 100
 ht_cp = 40
 fgc_cp = 'white'
 ft_cp = ('Helvetica', 15, 'bold')
+tc_cp = '#706C6C'
 
 
 'config category list'
@@ -82,9 +85,6 @@ fgc_c = 'white'
 ft_c = ('Helvetica', 15, 'bold')
 st_c = 'readonly'
 bc_c = '#3D3935'
-values_c = ['Спорт. Товары', 'Сад и огород', 'Охота и Рыбалка', 'Строй. Материалы', 'Игрушки', 'Канц. Товары', 'Продукты питания',
-                                        'Хоз. Товары', 'Одежда', 'Мебель', 'Электроника', 'Инструменты', 'Бытовая химия', 'Техника', 'Для животных']
-
 
 
 
@@ -92,7 +92,7 @@ values_c = ['Спорт. Товары', 'Сад и огород', 'Охота и
 '-------ConfirmationPage--------'
 
 'config window'
-ttl_cp = ''
+ttl_cp = 'Подтверждение'
 gt_cp = '500x200+800+200'
 
 
@@ -125,5 +125,9 @@ ft_clb = ('Helvetica', 18, 'bold')
 
 
 path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
+
+
+
+#["Продукты питания", "Игрушки", "Инструменты", "Техника", "Для животных", "Канц. Товары", "Спорт. Товары", "Аптека", "Охота", "Рыбалка", "Досуг", "Одежда", "Обувь"]
 
 
