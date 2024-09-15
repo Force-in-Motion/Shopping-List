@@ -44,6 +44,15 @@ ft_cb = ('Helvetica', 15, 'bold')
 
 
 
+
+'-------EditNameShoppingList-------'
+ttl_ensl = 'Редактирование названия списка'
+pht_ensl = 'Введите новое название списка'
+
+
+
+
+
 '-------AddReminder-------'
 ttl_ar = 'Установка напоминания'
 

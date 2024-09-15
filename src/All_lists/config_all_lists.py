@@ -56,7 +56,11 @@ size_l = (240, 200)
 tt_l = ''
 
 
-
+'-------ScrollAllList-------'
+ft_sl = ('Helvetica', 18, 'bold')
+hc_sl = '#453E3E'
+fgc_sl = '#434141'
+bw_sl = 1
 
 
 

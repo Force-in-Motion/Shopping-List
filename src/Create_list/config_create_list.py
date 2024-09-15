@@ -87,25 +87,21 @@ rb_ht = False
 
 
 'config frames'
-wh_sld = 900
-ht_sld = 250
-fgc_sld = 'transparent'
-cr_sld= 0
+wh_ccl = 900
+ht_ccl = 210
+fgc_ccl = 'transparent'
+cr_ccl= 0
 
-wh_sp = 600
-ht_sp = 300
-fgc_sp = 'transparent'
-cr_sp = 0
+wh_sf = 600
+ht_sf = 340
+fgc_sf = 'transparent'
+cr_sf = 0
 
 w_bm = 900
 h_bm = 130
 fg_bm = 'transparent'
 cr_bm = 0
 
-wh_mf = 900
-ht_mf = 700
-fgc_mf = 'transparent'
-cr_mf = 0
 
 
 '-------ScrollAddProducts-------'

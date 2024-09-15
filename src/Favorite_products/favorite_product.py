@@ -23,9 +23,12 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+
         self.__add_list_label = None
+
         self.__config_label_add_product()
         self.__config_buttons_menu()
 
@@ -43,52 +46,30 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
         self.__add_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ali)
         self.__add_list = ctk.CTkButton(self, image=self.__add_list_image_button, width=wh_alb, height=ht_alb,
                                             text=tt_alb, fg_color=fgc_alb, hover_color=hc_alb)
-        self.__add_list.configure(command=self.add_button_click_handler)
+        self.__add_list.configure(command=self.__main_window.add_button_click_handler)
         self.__add_list.place(relx=0.04, rely=0.1)
 
         self.__del_product = ctk.CTkButton(self, text=tt_db, width=wh_db, fg_color=fgc_db, height=ht_db, text_color=tc_db,
                                        border_width=bw_db, hover_color=hc_db, font=ft_db)
-        self.__del_product.configure(command=self.del_button_click_handler)
+        self.__del_product.configure(command=self.__main_window.del_button_click_handler)
         self.__del_product.place(relx=0.05, rely=0.65)
 
         self.__clear_btn = ctk.CTkButton(self, text=tt_cb, width=wh_cb, fg_color=fgc_cb, height=ht_cb, text_color=tc_cb,
                                          border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
-        self.__clear_btn.configure(command=self.clear_button_click_handler)
+        self.__clear_btn.configure(command=self.__main_window.clear_button_click_handler)
         self.__clear_btn.place(relx=0.4, rely=0.65)
 
         self.__cancel_btn = ctk.CTkButton(self, text=tt_cab, width=wh_cab, fg_color=fgc_cab, height=ht_cab,
                                            text_color=tc_cab, border_width=bw_cab, hover_color=hc_cab, font=ft_cab)
-        self.__cancel_btn.configure(command=self.cancel_button_click_handler)
+        self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.75, rely=0.65)
-
-    def add_button_click_handler(self):
-        """
-        Обрабатывает клик по кнопке добавления товара
-        """
-        pass
-
-    def del_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке удаления выделенного товара
-        """
-        pass
-
-    def clear_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке удаления всего товара в избранном
-        """
-        pass
-
-    def cancel_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке возврата в предыдущее меню
-        """
-        pass
 
 
 class FavoriteProducts(ctk.CTkToplevel):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.__main_window = main_window
+
         self.__config_window()
         self.__config_logo()
         self.__config_scroll_frame()
@@ -120,6 +101,30 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__menu_btn = ButtonMenuFavoriteProducts(self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
+        self.__menu_btn = ButtonMenuFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
         self.__menu_btn.place(relx=0, rely=0.64)
 
+    def add_button_click_handler(self):
+        """
+        Обрабатывает клик по кнопке добавления товара
+        """
+        pass
+
+    def del_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке удаления выделенного товара
+        """
+        pass
+
+    def clear_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке удаления всего товара в избранном
+        """
+        pass
+
+    def cancel_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке возврата в предыдущее меню
+        """
+        self.__main_window.deiconify()
+        self.destroy()

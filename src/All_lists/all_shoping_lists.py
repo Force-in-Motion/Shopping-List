@@ -1,29 +1,91 @@
-import customtkinter as ctk
+from src.Create_list.create_list_page import CreateList
+from src.Open_list.open_list_products import *
+from src.Top_lvl_pages.top_lvl_pages import *
+from src.save_and_load_data import SaveAndLoadData as sld
 from src.All_lists.config_all_lists import *
+import customtkinter as ctk
 from PIL import Image
-import sys
 
 
-class ScrollAddList(ctk.CTkScrollableFrame):
+# Реализовать атоснятие галоччки с чекбокса после выполнения какой либо операции ( удаления / редактирования / открытия списка )
+
+class ScrollAllList(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для добавления списков покупок
     """
-    def __init__(self, master,  **kwargs):
+    def __init__(self, main_window, master,  **kwargs):
         super().__init__(master, **kwargs)
-        self.__shopping_list = None
+        self.__main_window = main_window
+        self.__count_check_boxes = 0
+        self.__list_check_boxes = []
 
-    def add_shoping_list(self, name):
-        self.__shopping_list = ctk.CTkCheckBox(self, text=f'{name}', font=('Helvetica', 18, 'bold'),
-                                  hover_color='#453E3E', fg_color='#434141', border_width=1)
-        self.__shopping_list.grid(padx=(10, 0), pady=10)
+        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
+
+        self.__load_shopping_lists()
+
+    def __load_shopping_lists(self):
+        for name in list(self.__load_data.keys()):
+
+            shopping_list = ctk.CTkCheckBox(self, text=f'{name}', font=ft_sl, hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+            shopping_list.grid(padx=(10, 0), pady=10)
+
+            self.__count_check_boxes += 1
+            self.__list_check_boxes.append(shopping_list)
+
+    def add_new_check_box(self, list_name):
+
+        shopping_list = ctk.CTkCheckBox(self, text=f'{list_name}', font=ft_sl, hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+        shopping_list.grid(padx=(10, 0), pady=10)
+
+        self.__count_check_boxes += 1
+        self.__list_check_boxes.append(shopping_list)
+
+    def set_new_text_for_check_box(self, checkbox,  new_text):
+        if checkbox is not None:
+            checkbox.configure(text=new_text)
+
+    def check_selected_check_box(self):
+        for checkbox in self.__list_check_boxes:
+            if checkbox.get() == 1:
+                return True
+        return False
+
+    def delete_check_box(self):
+        text, checkbox = self.get_selected_check_box()
+
+        self.__count_check_boxes -= 1
+
+        for i in range(len(self.__list_check_boxes) - 1, -1, -1):
+            checkbox = self.__list_check_boxes[i]
+
+            if checkbox.cget("text") == text:
+                checkbox.destroy()
+                del self.__list_check_boxes[i]
+
+    def get_selected_check_box(self):
+        for checkbox in self.__list_check_boxes:
+            if checkbox.get() == 1:
+                return checkbox.cget("text"), checkbox
+        return None, None
+
+    def __get_count_check_boxes(self):
+        return self.__count_check_boxes
+
+    def __get_load_data(self):
+        return self.__load_data
+
+    load_data = property(__get_load_data)
+    count_check_boxes = property(__get_count_check_boxes)
 
 
-class ButtonsMenuAddList(ctk.CTkFrame):
+class ButtonsMenuAllList(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, master, **kwargs):
+    def __init__(self, main_window, master, **kwargs):
         super().__init__(master, **kwargs)
+        self.__main_window = main_window
+
         self.__label_add_list = None
 
         self.__config_label_add_list()
@@ -44,7 +106,7 @@ class ButtonsMenuAddList(ctk.CTkFrame):
         self.__add_list_image = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_alb)
         self.__add_list = ctk.CTkButton(self, image=self.__add_list_image, width=wh_alb, height=ht_alb, text=tt_alb, fg_color=fgc_alb, hover_color=hc_alb)
         self.__add_list.place(relx=0.04, rely=0.1)
-        self.__add_list.configure(command=self.add_list_button_click_handler)
+        self.__add_list.configure(command=self.__main_window.add_list_button_click_handler)
 
     def __config_menu_buttons(self) -> None:
         """
@@ -53,70 +115,45 @@ class ButtonsMenuAddList(ctk.CTkFrame):
         self.__open_list = ctk.CTkButton(self, text=ol_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                          border_width=bw_m, hover_color=hc_m,font=ft_m)
         self.__open_list.place(relx=0.05, rely=0.65)
-        self.__open_list.configure(command=self.open_list_button_click_handler)
+        self.__open_list.configure(command=self.__main_window.open_list_button_click_handler)
 
         self.__edit_list = ctk.CTkButton(self, text=el_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                          border_width=bw_m, hover_color=hc_m, font=ft_m)
         self.__edit_list.place(relx=0.3, rely=0.65)
-        self.__edit_list.configure(command=self.edit_list_button_click_handler)
+        self.__edit_list.configure(command=self.__main_window.edit_list_button_click_handler)
 
         self.__del_list = ctk.CTkButton(self, text=dl_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                         border_width=bw_m, hover_color=hc_m, font=ft_m)
         self.__del_list.place(relx=0.55, rely=0.65)
-        self.__del_list.configure(command=self.del_list_button_click_handler)
+        self.__del_list.configure(command=self.__main_window.del_list_button_click_handler)
 
         self.__cancel_btn = ctk.CTkButton(self, text=cl_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                        border_width=bw_m, hover_color=hc_m, font=ft_m)
         self.__cancel_btn.place(relx=0.78, rely=0.65)
-        self.__cancel_btn.configure(command=self.cancel_button_click_handler)
+        self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
 
         self.__reminder_btn = ctk.CTkButton(self, text=rr_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                         border_width=bw_m, hover_color=hc_m, font=ft_m)
         self.__reminder_btn.place(relx=0.78, rely=0.12)
-        self.__reminder_btn.configure(command=self.reminder_button_click_handler)
-
-    def add_list_button_click_handler(self, name) -> None:
-        """
-        Обрабатывает клик по кнопке добавления список покупок
-        """
-        pass
-
-    def open_list_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке открытия списка покупок
-        """
-        pass
-
-    def edit_list_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке редактирования списка покупок
-        """
-        pass
-
-    def del_list_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке удаления списка покупок
-        """
-        pass
-
-    def cancel_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке возврата на главную страницу
-        """
-
-    def reminder_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке утановка напоминания
-        """
-        pass
+        self.__reminder_btn.configure(command=self.__main_window.reminder_button_click_handler)
 
 
 class AllLists(ctk.CTkToplevel):
     """
     Мэйн класс страницы, в себе формирует основной контейнер (фрейм), содержащий остальные виджеты страницы
     """
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.__main_window = main_window
+
+        self.__scroll_all_lists = None
+        self.__all_lists_menu_btn = None
+
+        self.__create_shopping_list_page = None
+        self.__confirmation_request_page = None
+        self.__edit_name_shopping_list_page = None
+        self.__open_list_page = None
+
         self.__config_window()
         self.__config_scroll_frame()
         self.__config_menu_buttons()
@@ -134,15 +171,15 @@ class AllLists(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера для добавления спсисков покупок
         """
-        self.__scroll_frame = ScrollAddList(self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
-        self.__scroll_frame.place(relx=0.04, rely=0.05)
+        self.__scroll_all_lists = ScrollAllList(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
+        self.__scroll_all_lists.place(relx=0.04, rely=0.05)
 
     def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__buttons_frame = ButtonsMenuAddList(self, width=wh_bf, height=ht_bf, fg_color=fgc_bf, corner_radius=cr_sf)
-        self.__buttons_frame.place(relx=0, rely=0.6)
+        self.__all_lists_menu_btn = ButtonsMenuAllList(self,  master=self, width=wh_bf, height=ht_bf, fg_color=fgc_bf, corner_radius=cr_sf)
+        self.__all_lists_menu_btn.place(relx=0, rely=0.6)
 
     def __config_logo(self) -> None:
         """
@@ -151,6 +188,85 @@ class AllLists(ctk.CTkToplevel):
         self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size_l)
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.69, rely=0.05)
+
+    def add_list_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке добавления список покупок
+        """
+        self.__create_shopping_list_page = CreateList(self)
+
+        self.withdraw()
+
+    def open_list_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке открытия списка покупок
+        """
+        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Открывать нечего')
+
+        if not self.__scroll_all_lists.check_selected_check_box():
+            showerror('Ошибка', 'Выберите список чтобы открыть его')
+            return
+
+        self.__open_list_page = ListProducts(self)
+        self.withdraw()
+
+    def edit_list_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке редактирования списка покупок
+        """
+        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Редактировать нечего нечего')
+
+        if not self.__scroll_all_lists.check_selected_check_box():
+            showerror('Ошибка', 'Выберите список для редактирования')
+            return
+
+        self.__edit_name_shopping_list_page = EditNameShoppingList(self, self.__scroll_all_lists)
+
+        self.withdraw()
+
+    def del_target_condition(self):
+        key, check_box = self.__scroll_all_lists.get_selected_check_box()
+
+        self.__scroll_all_lists.load_data.pop(key, None)
+
+        sld.write_data_in_shopping_lists(self.__scroll_all_lists.load_data)
+
+    def del_list_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке удаления списка покупок
+        """
+        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Удалять нечего')
+
+        if not self.__scroll_all_lists.check_selected_check_box():
+            showerror('Ошибка', 'Выберите список для удаления')
+            return
+
+        self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_all_lists)
+
+        self.withdraw()
+
+    def cancel_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке возврата на главную страницу
+        """
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+    def reminder_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке утановка напоминания
+        """
+        pass
+
+    def __get_scroll_all_lists(self):
+        return self.__scroll_all_lists
+
+    def __get_create_shopping_list_page(self):
+        return self.__create_shopping_list_page
+
+    scroll_all_lists = property(__get_scroll_all_lists)
+    create_shopping_list_page = property(__get_create_shopping_list_page)
 
 
 

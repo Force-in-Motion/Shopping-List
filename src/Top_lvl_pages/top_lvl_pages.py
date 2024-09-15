@@ -72,7 +72,7 @@ class AddNewCategory(ctk.CTkToplevel):
 
         self.__main_window.deiconify()
 
-        self.__main_window._CreateList__category_product.configure(values=self.__list_categories.get("cs"))
+        self.__main_window._CreateList__data_create_list._ConfigCreateList__category_product.configure(values=self.__list_categories.get("cs"))
 
         self.destroy()
 
@@ -88,6 +88,59 @@ class AddNewCategory(ctk.CTkToplevel):
         return self.__input_field.get()
 
     input_data = property(__get_input_field_data)
+
+
+class EditNameShoppingList(AddNewCategory):
+    def __init__(self, main_window, scroll_all_lists, *args, **kwargs):
+        super().__init__(main_window, *args, **kwargs)
+        self.__main_window = main_window
+        self.__scroll_all_lists = scroll_all_lists
+        self.__input_field = None
+
+        self.title(ttl_ensl)
+        self.__config_input_field()
+
+    def __config_input_field(self):
+        """
+        Формирует в себе поля ввода данных пользователя
+        """
+        self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_ensl, placeholder_text_color=phtc_if,
+                                              width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
+        self.__input_field.place(relx=0.05, rely=0.2)
+
+    def save_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке сохранения списка покупок
+        """
+        assert self.input_data != '', showerror('Ошибка', 'Пустая строка не может быть принята')
+
+        text, checkbox = self.__scroll_all_lists.get_selected_check_box()
+
+        self.__scroll_all_lists.set_new_text_for_check_box(checkbox, self.input_data)
+
+        if text in self.__scroll_all_lists.load_data:
+            self.__scroll_all_lists.load_data[self.input_data] = self.__scroll_all_lists.load_data.pop(text)
+
+            checkbox.deselect()
+
+            sld.write_data_in_shopping_lists(self.__scroll_all_lists.load_data)
+
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+    def cancel_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке возврата на предыдущую страницу
+        """
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+    def __get_input_data(self):
+        return self.__input_field.get()
+
+    input_data = property(__get_input_data)
 
 
 class AddReminder(AddNewCategory):
@@ -262,7 +315,8 @@ class ConfirmationPage(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        self.__main_window.del_target_product_from_list_products()
+        self.__main_window.del_target_condition()
+
         self.__scroll_frame.delete_check_box()
 
         self.__main_window.deiconify()

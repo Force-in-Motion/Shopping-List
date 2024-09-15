@@ -7,8 +7,9 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для работы с добавленными товарами
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
 
     def shows_purchase_history(self, name):
         product = ctk.CTkCheckBox(self, text=f'{name}', font=('Helvetica', 18, 'bold'),
@@ -20,8 +21,10 @@ class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+
         self.__config_menu_buttons()
 
     def __config_menu_buttons(self) -> None:
@@ -30,45 +33,29 @@ class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
         """
         self.__del_product = ctk.CTkButton(self, text=tt_dp, width=wh_dp, fg_color=fgc_dp, height=ht_dp,
                                            text_color=tc_dp, border_width=bw_dp, hover_color=hc_dp, font=ft_dp)
-        self.__del_product.configure(command=self.del_button_click_handler)
+        self.__del_product.configure(command=self.__main_window.del_button_click_handler)
         self.__del_product.place(relx=0.05, rely=0.5)
 
         self.__clear_history = ctk.CTkButton(self, text=tt_ch, width=wh_ch, fg_color=fgc_ch, height=ht_ch,
                                              text_color=tc_ch, border_width=bw_ch, hover_color=hc_ch, font=ft_ch)
-        self.__clear_history.configure(command=self.clear_button_click_handler)
+        self.__clear_history.configure(command=self.__main_window.clear_button_click_handler)
         self.__clear_history.place(relx=0.4, rely=0.5)
 
         self.__cancel_btn = ctk.CTkButton(self, text=tt_cb, width=wh_cb, fg_color=fgc_cb,
                                         height=ht_cb, text_color=tc_cb, border_width=bw_cb, hover_color=hc_cb,
                                         font=ft_cb)
-        self.__cancel_btn.configure(command=self.cancel_button_click_handler)
+        self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.75, rely=0.5)
-
-    def del_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке удаления товара
-        """
-        pass
-
-    def clear_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке редактирования товара
-        """
-        pass
-
-    def cancel_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке возврата на предыдущую страницу
-        """
-        pass
 
 
 class PurchaseHistory(ctk.CTkToplevel):
     """
     Мэйн класс страницы, в себе формирует основные контейнеры (фреймы), содержащие остальные виджеты страницы
     """
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.__main_window = main_window
+
         self.__config_window()
         self.__config_logo()
         self.__config_scroll_frame()
@@ -94,12 +81,32 @@ class PurchaseHistory(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера для добавления товаров
         """
-        self.__scroll_frame = ScrollPurchaseHistory(self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
+        self.__scroll_frame = ScrollPurchaseHistory(self,  master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
         self.__scroll_frame.place(relx=0.04, rely=0.05)
 
     def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__menu_btn = ButtonsMenuPurchaseHistory(self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
+        self.__menu_btn = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
         self.__menu_btn.place(relx=0, rely=0.75)
+
+    def del_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке удаления товара
+        """
+        pass
+
+    def clear_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке редактирования товара
+        """
+        pass
+
+    def cancel_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке возврата на предыдущую страницу
+        """
+        self.__main_window.deiconify()
+
+        self.destroy()
