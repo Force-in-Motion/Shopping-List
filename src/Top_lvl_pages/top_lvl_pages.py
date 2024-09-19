@@ -3,6 +3,7 @@ from PIL import Image
 from src.Top_lvl_pages.config_top_level_pages import *
 from src.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror
+from src.Templates import Templates
 
 
 class AddNewCategory(ctk.CTkToplevel):
@@ -95,18 +96,8 @@ class EditNameShoppingList(AddNewCategory):
         super().__init__(main_window, *args, **kwargs)
         self.__main_window = main_window
         self.__scroll_all_lists = scroll_all_lists
-        self.__input_field = None
 
         self.title(ttl_ensl)
-        self.__config_input_field()
-
-    def __config_input_field(self):
-        """
-        Формирует в себе поля ввода данных пользователя
-        """
-        self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_ensl, placeholder_text_color=phtc_if,
-                                              width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
-        self.__input_field.place(relx=0.05, rely=0.2)
 
     def save_button_click_handler(self) -> None:
         """
@@ -114,16 +105,16 @@ class EditNameShoppingList(AddNewCategory):
         """
         assert self.input_data != '', showerror('Ошибка', 'Пустая строка не может быть принята')
 
-        text, checkbox = self.__scroll_all_lists.get_selected_check_box()
+        text, checkbox = self.__scroll_all_lists.get_selected_checkbox()
 
-        self.__scroll_all_lists.set_new_text_for_check_box(checkbox, self.input_data)
+        self.__scroll_all_lists.set_new_text_for_checkbox(checkbox, self.input_data)
 
-        if text in self.__scroll_all_lists.load_data:
-            self.__scroll_all_lists.load_data[self.input_data] = self.__scroll_all_lists.load_data.pop(text)
+        if text in self.__main_window.load_data:
+            self.__main_window.load_data[self.input_data] = self.__main_window.load_data.pop(text)
 
-            checkbox.deselect()
+            sld.write_data_in_shopping_lists(self.__main_window.load_data)
 
-            sld.write_data_in_shopping_lists(self.__scroll_all_lists.load_data)
+            self.__scroll_all_lists.reset_checkboxes()
 
         self.__main_window.deiconify()
 
@@ -135,12 +126,9 @@ class EditNameShoppingList(AddNewCategory):
         """
         self.__main_window.deiconify()
 
+        self.__scroll_all_lists.reset_checkboxes()
+
         self.destroy()
-
-    def __get_input_data(self):
-        return self.__input_field.get()
-
-    input_data = property(__get_input_data)
 
 
 class AddReminder(AddNewCategory):
@@ -149,7 +137,7 @@ class AddReminder(AddNewCategory):
         self.title(ttl_ar)
 
 
-class AddProduct(ctk.CTkToplevel):
+class EditProduct(ctk.CTkToplevel):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
@@ -224,23 +212,25 @@ class AddProduct(ctk.CTkToplevel):
         self.__cancel_btn.place(relx=0.71, rely=0.7)
 
     def edit_data_check_box(self):
-        new_text = f'{self.new_name_product}, {self.new_count_product}, {self.new_category}'
+        new_text = f'{self.name_product}, {self.count_product}, {self.category}'
 
-        old_text, check_box = self.__scroll_frame.get_selected_check_box()
+        old_text, check_box = self.__scroll_frame.get_selected_checkbox()
 
         self.__main_window.update_load_data(old_text, new_text)
 
-        self.__scroll_frame.set_new_text_for_check_box(check_box, new_text)
+        self.__scroll_frame.set_new_text_for_checkbox(check_box, new_text)
 
     def save_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        assert self.new_name_product != '' and self.new_count_product != '' and self.new_category != '', showerror('Ошибка', 'Заполните все поля')
+        assert self.name_product != '' and self.count_product != '' and self.category != '', showerror('Ошибка', 'Заполните все поля')
 
-        assert self.new_count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
+        assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
 
         self.edit_data_check_box()
+
+        self.__scroll_frame.reset_checkboxes()
 
         self.__main_window.deiconify()
 
@@ -251,6 +241,8 @@ class AddProduct(ctk.CTkToplevel):
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
         self.__main_window.deiconify()
+
+        self.__scroll_frame.reset_checkboxes()
 
         self.destroy()
 
@@ -263,9 +255,46 @@ class AddProduct(ctk.CTkToplevel):
     def __get_category_product(self):
         return self.__category_product.get()
 
-    new_name_product = property(__get_name_product)
-    new_count_product = property(__get_count_product)
-    new_category = property(__get_category_product)
+    name_product = property(__get_name_product)
+    count_product = property(__get_count_product)
+    category = property(__get_category_product)
+
+
+class AddProduct(EditProduct):
+    """
+    Класс, описывающий функционал окна верхнего уровня и его виджеты
+    """
+    def __init__(self, main_window, scroll_frame, *args, **kwargs):
+        super().__init__(main_window, scroll_frame, *args, **kwargs)
+
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
+
+    def save_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке сохранения списка покупок
+        """
+        assert self.name_product != '' and self.count_product != '' and self.category != '', showerror('Ошибка', 'Заполните все поля')
+
+        assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
+
+        if Templates.checks_presence_element(self.name_product, self.__main_window.list_products):
+            showerror('Ошибка', 'Такой продукт уже есть в списке')
+            return
+
+        self.__scroll_frame.create_checkbox(self.name_product, self.count_product, self.category)
+
+        product = [self.name_product, self.count_product, self.category]
+
+        self.__main_window.list_products.append(product)
+
+        self.__main_window.load_data[self.__scroll_frame.list_name] = self.__main_window.list_products
+
+        sld.write_data_in_shopping_lists(self.__main_window.load_data)
+
+        self.__main_window.deiconify()
+
+        self.destroy()
 
 
 class ConfirmationPage(ctk.CTkToplevel):
@@ -317,7 +346,7 @@ class ConfirmationPage(ctk.CTkToplevel):
         """
         self.__main_window.del_target_condition()
 
-        self.__scroll_frame.delete_check_box()
+        self.__scroll_frame.delete_checkbox()
 
         self.__main_window.deiconify()
 

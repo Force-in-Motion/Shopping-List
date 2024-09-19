@@ -9,7 +9,17 @@ class Templates:
         # :return: Возвращает True если элемент есть в матрице, иначе False
         # """
         for elem in matrix:
-            return True if data in elem else False
+            if data in elem: return True
+        return False
+
+    @staticmethod
+    def del_elem_in_matrix(matrix, item):
+        for elem in matrix:
+            if elem == item:
+                matrix.remove(elem)
+        return matrix
+
+
 
 
 

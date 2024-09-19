@@ -9,6 +9,12 @@ tt_bf = ''
 fgc_bf = 'transparent'
 hc_bf = '#262424'
 
+'config checkbox'
+
+ft_sl = ('Helvetica', 18, 'bold')
+hc_sl = '#453E3E'
+fgc_sl = '#434141'
+bw_sl = 1
 
 '-------ButtonsMenuOpenListProducts-------'
 
@@ -26,7 +32,7 @@ fgc_ap = 'transparent'
 hc_ap = '#262424'
 
 tt_ep = "Редактировать"
-wh_ep = 150
+wh_ep = 220
 ht_ep = 50
 fgc_ep = '#CD5C5C'
 tc_ep = 'white'
@@ -34,17 +40,8 @@ bw_ep = 1
 hc_ep = '#783D3D'
 ft_ep = ('Helvetica', 15, 'bold')
 
-tt_fp = "Фильтровать"
-wh_fp = 150
-ht_fp = 50
-fgc_fp = '#CD5C5C'
-tc_fp = 'white'
-bw_fp = 1
-hc_fp = '#783D3D'
-ft_fp = ('Helvetica', 15, 'bold')
-
 tt_dp = "Удалить"
-wh_dp = 150
+wh_dp = 220
 ht_dp = 50
 fgc_dp = '#CD5C5C'
 tc_dp = 'white'
@@ -53,7 +50,7 @@ hc_dp = '#783D3D'
 ft_dp = ('Helvetica', 15, 'bold')
 
 tt_cb = "Отмена"
-wh_cb = 150
+wh_cb = 220
 ht_cb = 50
 fgc_cb = '#CD5C5C'
 tc_cb = 'white'
@@ -90,7 +87,27 @@ ht_mb = 280
 fgc_mb = 'transparent'
 cr_mb = 0
 
+'config label sort menu'
+tc_slb = 'white'
+tt_slb = 'Сортировать по категории:'
+ft_slb = ('Helvetica', 17, 'bold')
 
+'config_sorted_meny'
+size_sp = (40, 40)
+wh_sp = 0
+ht_sp = 0
+tt_sp = ''
+fgc_sp = 'transparent'
+hc_sp = '#262424'
+
+'config_category_place'
+tc_c = '#706C6C'
+wh_c = 180
+ht_c = 40
+fgc_c = 'white'
+ft_c = ('Helvetica', 15, 'bold')
+st_c = 'readonly'
+bc_c = '#3D3935'
 
 
 

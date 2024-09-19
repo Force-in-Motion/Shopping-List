@@ -15,10 +15,9 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
     def __init__(self, main_window, master, **kwargs):
         super().__init__(master, **kwargs)
         self.__main_window = main_window
-        self.__product = None
-        self.__list_check_boxes = []
+        self.__list_checkboxes = []
 
-    def create_check_box(self, name_product, count_product, category) -> None:
+    def create_checkbox(self, name_product, count_product, category) -> None:
         """
         Создает чекбокс в скролл фрейме с переданными данными в качестве текста
         :param name_product: Принимает название продукта
@@ -26,13 +25,13 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
         :param category: Принимает категорию продукта
         :return: None
         """
-        self.__product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}', font=ft_p,
+        product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}', font=ft_p,
                                          hover_color=hc_p, fg_color=fgc_p, border_width=bw_p)
+        product.grid(sticky="w", padx=(10, 0), pady=10)
 
-        self.__list_check_boxes.append(self.__product)
-        self.__product.grid(padx=(10, 0), pady=10)
+        self.__list_checkboxes.append(product)
 
-    def set_new_text_for_check_box(self, checkbox,  new_text) -> None:
+    def set_new_text_for_checkbox(self, checkbox,  new_text) -> None:
         """
         Устанавливает новый текст для чекбокса если он не существует
         :param checkbox: Принимает ссылку на чекбокс
@@ -42,44 +41,72 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
         if checkbox is not None:
             checkbox.configure(text=new_text)
 
-    def check_selected_check_box(self) -> bool:
+    def create_list_select_checkboxes(self) -> list:
         """
-        Обходит список чекбоксов и выполняет проверку, если хоть один активен - вернет True иначе False
+        Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
+        :return: Возвращает список активных чекбоксов
         """
-        for checkbox in self.__list_check_boxes:
+        list_select_checkboxes = [checkbox for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_checkboxes
+
+    def create_list_text_select_checkbox(self):
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
+        :return: Возвращает список текста активных чекбоксов
+        """
+        list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_texts
+
+    def delete_checkbox(self) -> None:
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
+        Обходит этот список и удаляет его из этого списка, а так же из скролл фрейма и из списка чекбоксов
+        """
+        for checkbox in self.create_list_select_checkboxes():
+            checkbox.destroy()
+            self.__list_checkboxes.remove(checkbox)
+
+    def check_selected_checkbox(self) -> (str, object) or bool:
+        """
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
+        Если в списке нет активных чекбоксов то возвращает False
+        """
+        for checkbox in self.__list_checkboxes:
             if checkbox.get() == 1:
                 return True
         return False
 
-    def delete_check_box(self) -> None:
-        """
-        Внутри себя вызывает другую функцию, при помощи которой, получает текст нажатого чекбокса и ссылку на него
-        Если он не является None то удаляет его из скролл фрейма и из списка чекбоксов
-        """
-        selected_text, checkbox = self.get_selected_check_box()
-
-        if not (checkbox is None):
-            checkbox.destroy()
-            self.__list_check_boxes.remove(checkbox)
-
-    def get_selected_check_box(self) -> (str, object) or (None, None):
+    def get_selected_checkbox(self) -> (str, object) or bool:
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
         :return:
         """
-        for checkbox in self.__list_check_boxes:
+        for checkbox in self.__list_checkboxes:
             if checkbox.get() == 1:
                 return checkbox.cget("text"), checkbox
         return None, None
 
-    def __get_count_check_boxes(self):
+    def reset_checkboxes(self) -> None:
+        """
+        Снимает галочки со всех чекбоксов.
+        """
+        for checkbox in self.__list_checkboxes:
+            checkbox.deselect()
+
+    def __get_count_checkboxes(self) -> int:
         """
         :return: Возвращает количество чекбоксов в списке
         """
-        return len(self.__list_check_boxes)
+        return len(self.__list_checkboxes)
 
-    count_check_boxes = property(__get_count_check_boxes)
+    def __get_list_checkboxes(self) -> list:
+        return self.__list_checkboxes
+
+    list_checkboxes = property(__get_list_checkboxes)
+    count_checkboxes = property(__get_count_checkboxes)
 
 
 class ConfigCreateList(ctk.CTkFrame):
@@ -237,6 +264,8 @@ class CreateList(ctk.CTkToplevel):
         super().__init__()
         self.__main_window = main_window
 
+        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
+
         self.__confirmation_request_page = None
         self.__edit_product_page = None
         self.__add_category_page = None
@@ -251,8 +280,6 @@ class CreateList(ctk.CTkToplevel):
         self.__config_create_list()
         self.__config_scroll_frame()
         self.__config_buttons_menu()
-
-        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
 
     def __config_window(self) -> None:
         """
@@ -298,7 +325,7 @@ class CreateList(ctk.CTkToplevel):
             showerror('Ошибка', 'Такой продукт уже есть в списке')
             return
 
-        self.__scroll_create_list.create_check_box(self.__data_create_list.name_product, self.__data_create_list.count_product, self.__data_create_list.category)
+        self.__scroll_create_list.create_checkbox(self.__data_create_list.name_product, self.__data_create_list.count_product, self.__data_create_list.category)
 
         product = [self.__data_create_list.name_product, self.__data_create_list.count_product, self.__data_create_list.category]
 
@@ -312,29 +339,6 @@ class CreateList(ctk.CTkToplevel):
         """
         self.__add_category_page = AddNewCategory(self)
         self.withdraw()
-
-    def save_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке сохранения списка покупок, при наступлении исключения - выбрасывает окно с ошибкой
-        """
-        from src.All_lists.all_shoping_lists import AllLists
-
-        assert self.__scroll_create_list.count_check_boxes != 0, showerror('Ошибка', 'Добавьте товар или нажмите "Отмена"')
-
-        assert self.__data_create_list.name_shopping_list != '', showerror('Ошибка', 'Добавьте название списка покупок или нажмите "Отмена"')
-
-        sld.create_folder()
-
-        self.__load_data[self.__data_create_list.name_shopping_list] = self.__list_products
-
-        sld.write_data_in_shopping_lists(self.__load_data)
-
-        if isinstance(self.__main_window, AllLists):
-            self.__main_window.scroll_all_lists.add_new_check_box(self.__data_create_list.name_shopping_list)
-
-        self.__main_window.deiconify()
-
-        self.destroy()
 
     def update_load_data(self, old_text, new_text) -> None:
         """
@@ -353,46 +357,68 @@ class CreateList(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке редактирования товара, при наступлении исключения - выбрасывает окно с ошибкой
         """
-        assert self.__scroll_create_list.count_check_boxes != 0, showerror('Ошибка', 'Список товаров пуст, редактировать нечего')
+        assert self.__scroll_create_list.count_checkboxes != 0, showerror('Ошибка', 'Список товаров пуст, редактировать нечего')
 
-        if not self.__scroll_create_list.check_selected_check_box():
+        if not self.__scroll_create_list.check_selected_checkbox():
             showerror('Ошибка', 'Выберите товар для редактирования')
             return
 
-        self.__edit_product_page = AddProduct(self, self.__scroll_create_list)
+        if len(self.__scroll_create_list.create_list_select_checkboxes()) != 1:
+            showerror('Ошибка', 'Одновременно редактировать можно только 1 товар')
+            return
+
+        self.__edit_product_page = EditProduct(self, self.__scroll_create_list)
 
         self.withdraw()
 
     def del_target_condition(self) -> None:
         """
-        Внутри себя вызывает другую функцию, при помощи которой, получает текст нажатого чекбокса и ссылку на него
-        Проверяет текст, если он не является None То входит в условие и удаляет продукт из списка продуктов временной памяти
+        Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
+        Каждый элемент списка сплитуется по запятым и на следующем этапе цикла формируется новая матрица self.__list_products на основе старой
+        Но уже с теми элементами, которые не равны тем что находятся в списке активных чекбоксов
         """
-        selected_text, checkbox = self.__scroll_create_list.get_selected_check_box()
+        for text in self.scroll_create_list.create_list_text_select_checkbox():
 
-        if not (selected_text is None):
-            product_to_remove = selected_text.split(', ')
+            product_to_remove = text.split(', ')
 
-            for product in self.__list_products:
-
-                if product == product_to_remove:
-                    self.__list_products.remove(product)
-
-        return None
+            self.__list_products = [product for product in self.__list_products if product != product_to_remove]
 
     def del_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления товара, при наступлении исключения - выбрасывает окно с ошибкой
         """
-        assert self.__scroll_create_list.count_check_boxes != 0, showerror('Ошибка', 'Список товаров пуст, удалять нечего')
+        assert self.__scroll_create_list.count_checkboxes != 0, showerror('Ошибка', 'Список товаров пуст, удалять нечего')
 
-        if not self.__scroll_create_list.check_selected_check_box():
+        if not self.__scroll_create_list.check_selected_checkbox():
             showerror('Ошибка', 'Выберите товар для удаления')
             return
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_create_list)
 
         self.withdraw()
+
+    def save_button_click_handler(self) -> None:
+        """
+        Обрабатывает клик по кнопке сохранения списка покупок, при наступлении исключения - выбрасывает окно с ошибкой
+        """
+        from src.All_lists.all_shoping_lists import AllLists
+
+        assert self.__scroll_create_list.count_checkboxes != 0, showerror('Ошибка', 'Добавьте товар или нажмите "Отмена"')
+
+        assert self.__data_create_list.name_shopping_list != '', showerror('Ошибка', 'Добавьте название списка покупок или нажмите "Отмена"')
+
+        sld.create_folder()
+
+        self.__load_data[self.__data_create_list.name_shopping_list] = self.__list_products
+
+        if isinstance(self.__main_window, AllLists):
+            self.__main_window.scroll_all_lists.add_new_checkbox(self.__data_create_list.name_shopping_list)
+
+        sld.write_data_in_shopping_lists(self.__load_data)
+
+        self.__main_window.deiconify()
+
+        self.destroy()
 
     def cancel_button_click_handler(self) -> None:
         """

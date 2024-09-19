@@ -7,8 +7,6 @@ import customtkinter as ctk
 from PIL import Image
 
 
-# Реализовать атоснятие галоччки с чекбокса после выполнения какой либо операции ( удаления / редактирования / открытия списка )
-
 class ScrollAllList(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для добавления списков покупок
@@ -16,66 +14,102 @@ class ScrollAllList(ctk.CTkScrollableFrame):
     def __init__(self, main_window, master,  **kwargs):
         super().__init__(master, **kwargs)
         self.__main_window = main_window
-        self.__count_check_boxes = 0
-        self.__list_check_boxes = []
+        self.__list_checkboxes = []
 
-        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
+        self.__load_checkbox_shopping_lists()
 
-        self.__load_shopping_lists()
+    def __load_checkbox_shopping_lists(self) -> None:
+        """
+        Обходит загруженные из файла данные и устанавливает в скролл фрейм чекбоксы с текстом,
+        Взятым из названий списков покупок, а так же добавляет те же данные в список чекбоксов
+        """
+        for list_name in self.__main_window.load_data.keys():
 
-    def __load_shopping_lists(self):
-        for name in list(self.__load_data.keys()):
+            shopping_list = ctk.CTkCheckBox(self, text=f'{list_name}', font=ft_sl, hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+            shopping_list.grid(sticky="w", padx=(10, 0), pady=10)
 
-            shopping_list = ctk.CTkCheckBox(self, text=f'{name}', font=ft_sl, hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
-            shopping_list.grid(padx=(10, 0), pady=10)
+            self.__list_checkboxes.append(shopping_list)
 
-            self.__count_check_boxes += 1
-            self.__list_check_boxes.append(shopping_list)
-
-    def add_new_check_box(self, list_name):
-
+    def add_new_checkbox(self, list_name) -> None:
+        """
+        Добавляет новый чекбокс в скролл фрейм с текстом полученным текстом, а так же добавляет те же данные в список чекбоксов
+        :param list_name: Принимает название списка покупок
+        :return: None
+        """
         shopping_list = ctk.CTkCheckBox(self, text=f'{list_name}', font=ft_sl, hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
-        shopping_list.grid(padx=(10, 0), pady=10)
+        shopping_list.grid(sticky="w", padx=(10, 0), pady=10)
 
-        self.__count_check_boxes += 1
-        self.__list_check_boxes.append(shopping_list)
+        self.__list_checkboxes.append(shopping_list)
 
-    def set_new_text_for_check_box(self, checkbox,  new_text):
+    def set_new_text_for_checkbox(self, checkbox,  new_text):
+        """
+        Устанавливает новый текст для чекбокса если он не существует
+        :param checkbox: Принимает ссылку на чекбокс
+        :param new_text: Принимает новый текст для чекбокса
+        :return: None
+        """
         if checkbox is not None:
             checkbox.configure(text=new_text)
 
-    def check_selected_check_box(self):
-        for checkbox in self.__list_check_boxes:
+    def create_list_select_checkboxes(self):
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
+        :return: Возвращает список активных чекбоксов
+        """
+        list_select_checkboxes = [checkbox for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_checkboxes
+
+    def create_list_text_select_checkbox(self):
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
+        :return: Возвращает список текста активных чекбоксов
+        """
+        list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_texts
+
+    def delete_checkbox(self) -> None:
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
+        Обходит этот список и удаляет его из этого списка, а так же из скролл фрейма и из списка чекбоксов
+        """
+        for checkbox in self.create_list_select_checkboxes():
+            checkbox.destroy()
+            self.__list_checkboxes.remove(checkbox)
+
+    def check_selected_checkbox(self) -> (str, object) or bool:
+        """
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
+        Если в списке нет активных чекбоксов то возвращает False
+        """
+        for checkbox in self.__list_checkboxes:
             if checkbox.get() == 1:
                 return True
         return False
 
-    def delete_check_box(self):
-        text, checkbox = self.get_selected_check_box()
-
-        self.__count_check_boxes -= 1
-
-        for i in range(len(self.__list_check_boxes) - 1, -1, -1):
-            checkbox = self.__list_check_boxes[i]
-
-            if checkbox.cget("text") == text:
-                checkbox.destroy()
-                del self.__list_check_boxes[i]
-
-    def get_selected_check_box(self):
-        for checkbox in self.__list_check_boxes:
+    def get_selected_checkbox(self) -> (str, object) or bool:
+        """
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
+        Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
+        :return:
+        """
+        for checkbox in self.__list_checkboxes:
             if checkbox.get() == 1:
                 return checkbox.cget("text"), checkbox
         return None, None
 
-    def __get_count_check_boxes(self):
-        return self.__count_check_boxes
+    def reset_checkboxes(self) -> None:
+        """
+        Снимает галочки со всех чекбоксов.
+        """
+        for checkbox in self.__list_checkboxes:
+            checkbox.deselect()
 
-    def __get_load_data(self):
-        return self.__load_data
+    def __get_count_checkboxes(self):
+        return len(self.__list_checkboxes)
 
-    load_data = property(__get_load_data)
-    count_check_boxes = property(__get_count_check_boxes)
+    count_checkboxes = property(__get_count_checkboxes)
 
 
 class ButtonsMenuAllList(ctk.CTkFrame):
@@ -145,7 +179,7 @@ class AllLists(ctk.CTkToplevel):
     def __init__(self, main_window):
         super().__init__()
         self.__main_window = main_window
-
+        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
         self.__scroll_all_lists = None
         self.__all_lists_menu_btn = None
 
@@ -201,23 +235,34 @@ class AllLists(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке открытия списка покупок
         """
-        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Открывать нечего')
+        assert self.__scroll_all_lists.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Открывать нечего')
 
-        if not self.__scroll_all_lists.check_selected_check_box():
+        if not self.__scroll_all_lists.check_selected_checkbox():
             showerror('Ошибка', 'Выберите список чтобы открыть его')
             return
 
-        self.__open_list_page = ListProducts(self)
+        if len(self.__scroll_all_lists.create_list_select_checkboxes()) != 1:
+            showerror('Ошибка', 'Одновременно открыть можно только 1 список')
+            return
+
+        self.__open_list_page = ListProducts(self, self.__scroll_all_lists)
+
+        self.__scroll_all_lists.reset_checkboxes()
+
         self.withdraw()
 
     def edit_list_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке редактирования списка покупок
         """
-        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Редактировать нечего нечего')
+        assert self.__scroll_all_lists.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Редактировать нечего нечего')
 
-        if not self.__scroll_all_lists.check_selected_check_box():
+        if not self.__scroll_all_lists.check_selected_checkbox():
             showerror('Ошибка', 'Выберите список для редактирования')
+            return
+
+        if len(self.__scroll_all_lists.create_list_select_checkboxes()) != 1:
+            showerror('Ошибка', 'Одновременно редактировать можно только 1 список')
             return
 
         self.__edit_name_shopping_list_page = EditNameShoppingList(self, self.__scroll_all_lists)
@@ -225,19 +270,24 @@ class AllLists(ctk.CTkToplevel):
         self.withdraw()
 
     def del_target_condition(self):
-        key, check_box = self.__scroll_all_lists.get_selected_check_box()
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
+        Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
+        Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
+        """
+        for key in self.__scroll_all_lists.create_list_text_select_checkbox():
 
-        self.__scroll_all_lists.load_data.pop(key, None)
+            self.__load_data.pop(key, None)
 
-        sld.write_data_in_shopping_lists(self.__scroll_all_lists.load_data)
+        sld.write_data_in_shopping_lists(self.__load_data)
 
     def del_list_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления списка покупок
         """
-        assert self.__scroll_all_lists.count_check_boxes != 0, showerror('Ошибка', 'Файл пуст. Удалять нечего')
+        assert self.__scroll_all_lists.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Удалять нечего')
 
-        if not self.__scroll_all_lists.check_selected_check_box():
+        if not self.__scroll_all_lists.check_selected_checkbox():
             showerror('Ошибка', 'Выберите список для удаления')
             return
 
@@ -265,6 +315,10 @@ class AllLists(ctk.CTkToplevel):
     def __get_create_shopping_list_page(self):
         return self.__create_shopping_list_page
 
+    def __get_load_data(self):
+        return self.__load_data
+
+    load_data = property(__get_load_data)
     scroll_all_lists = property(__get_scroll_all_lists)
     create_shopping_list_page = property(__get_create_shopping_list_page)
 
