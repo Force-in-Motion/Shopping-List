@@ -60,6 +60,8 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
     def update_checkbox_place(self,  selected_category: str):
         self.clear_scroll_frame()
 
+        if self.__main_window.category_product.get() is None: showerror('Ошибка', 'Выберите категорию для сортировки')
+
         flag = False
 
         for elem in self.__main_window.list_products:
@@ -351,9 +353,10 @@ class ListProducts(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке редактирования товара
         """
-        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка','Список пуст. Сортировать нечего')
+        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Сортировать нечего')
 
         selected_category = self.__category_product.get()
+        print(selected_category)
 
         self.__scroll_open_list.update_checkbox_place(selected_category)
 
@@ -401,7 +404,7 @@ class ListProducts(ctk.CTkToplevel):
 
         self.__load_data_favorites["f"] = list_select_texts
 
-        showinfo('Сообщение', 'Товар успехно добавлен в "Избранное"')
+        showinfo('Сообщение', 'Товар успешно добавлен в "Избранное"')
 
         sld.write_data_in_favorites_products(self.__load_data_favorites)
 

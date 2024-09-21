@@ -103,7 +103,6 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     count_checkboxes = property(__get_count_checkboxes)
 
 
-
 class ButtonMenuFavoriteProducts(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
@@ -218,7 +217,7 @@ class FavoriteProducts(ctk.CTkToplevel):
 
         self.__load_data_favorites["f"] = self.__list_products
 
-        sld.write_data_in_favorites_products(self.load_data_favorites)
+        sld.write_data_in_favorites_products(self.__load_data_favorites)
 
     def del_button_click_handler(self) -> None:
         """
@@ -240,7 +239,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         assert self.__scroll_favorite.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
 
-        self.__confirmation_clear_favorite_page = ConfirmationForClearFavoritePage(self, self.__scroll_favorite)
+        self.__confirmation_clear_favorite_page = ConfirmationForClearScrollPlace(self, self.__scroll_favorite)
 
         self.withdraw()
 

@@ -125,7 +125,7 @@ ft_cmb = ('Helvetica', 18, 'bold')
 
 tt_clb = "Отмена"
 wh_clb = 150
-ht_clb = 50
+ht_clb = 40
 fgc_clb = '#CD5C5C'
 tc_clb = 'white'
 bw_clb = 1
@@ -133,10 +133,35 @@ hc_clb = '#783D3D'
 ft_clb = ('Helvetica', 18, 'bold')
 
 
+'-------OpenListPurchaseHistory-------'
+
+'config window'
+ttl_olph = 'Cписок товаров'
+gt_olph = '600x500+800+200'
+
+'config scroll frame'
+wh_solf = 500
+ht_solf = 370
+fgc_solf = 'transparent'
+cr_solf = 0
+
+'config menu button'
+tt_cbtn = "Назад"
+wh_cbtn = 150
+ht_cbtn = 40
+fgc_cbtn = '#CD5C5C'
+tc_cbtn = 'white'
+bw_cbtn = 1
+hc_cbtn = '#783D3D'
+ft_cbtn = ('Helvetica', 15, 'bold')
+
+'config label'
+
+ft_p = ('Helvetica', 18, 'bold')
+fgc_p = 'transparent'
+
 path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
 
 
-
-#["Продукты питания", "Игрушки", "Инструменты", "Техника", "Для животных", "Канц. Товары", "Спорт. Товары", "Аптека", "Охота", "Рыбалка", "Досуг", "Одежда", "Обувь"]
 
 

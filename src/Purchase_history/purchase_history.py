@@ -71,6 +71,15 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
                 return checkbox.cget("text"), checkbox
         return None, None
 
+    def delete_checkbox(self) -> None:
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
+        Обходит этот список и удаляет его из этого списка, а так же из скролл фрейма и из списка чекбоксов
+        """
+        for checkbox in self.create_list_select_checkboxes():
+            checkbox.destroy()
+            self.__list_checkboxes.remove(checkbox)
+
     def reset_checkboxes(self) -> None:
         """
         Снимает галочки со всех чекбоксов.
@@ -78,6 +87,14 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
         for checkbox in self.__list_checkboxes:
             if self.check_selected_checkbox():
                 checkbox.deselect()
+
+    def clear_scroll_frame(self) -> None:
+        """
+        Удаляет все чекбоксы из скролл фрейма.
+        """
+        for checkbox in self.__list_checkboxes:
+            checkbox.destroy()
+        self.__list_checkboxes.clear()
 
     def __get_count_checkboxes(self):
         """
@@ -133,7 +150,7 @@ class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
         self.__restore_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ol)
         self.__restore = ctk.CTkButton(self, image=self.__open_list_image_button, width=wh_ol, height=ht_ol,
                                             text=tt_ol, fg_color=fgc_ol, hover_color=hc_ol)
-        self.__restore.configure(command=self.__main_window.open_button_click_handler)
+        self.__restore.configure(command=self.__main_window.restore_button_click_handler)
         self.__restore.place(relx=0.38, rely=0.1)
 
         self.__del_product = ctk.CTkButton(self, text=tt_dp, width=wh_dp, fg_color=fgc_dp, height=ht_dp,
@@ -162,9 +179,11 @@ class PurchaseHistory(ctk.CTkToplevel):
         self.__main_window = main_window
 
         self.__load_data_purchase_history = sld.read_data_with_purchase_history() if sld.check_file_purchase_history() else {}
+        self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
 
         self.__open_list_page = None
         self.__confirmation_request_page = None
+        self.__confirmation_clear_favorite_page = None
 
         self.__scroll_purchase_history = None
         self.__btn_menu_purchase_history = None
@@ -201,8 +220,8 @@ class PurchaseHistory(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.btn_menu_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
-        self.btn_menu_purchase_history.place(relx=0, rely=0.64)
+        self.__btn_menu_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
+        self.__btn_menu_purchase_history.place(relx=0, rely=0.64)
 
     def open_button_click_handler(self) -> None:
         """
@@ -214,23 +233,69 @@ class PurchaseHistory(ctk.CTkToplevel):
             showerror('Ошибка', 'Выберите список чтобы открыть')
             return
 
-        self.__open_list_page = ListProducts(self, self.__scroll_purchase_history)
+        self.__open_list_page = OpenListPurchaseHistory(self, self.__scroll_purchase_history, self.__load_data_purchase_history)
 
         self.__scroll_purchase_history.reset_checkboxes()
 
         self.withdraw()
 
+    def del_target_condition(self):
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
+        Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
+        Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
+        """
+
+        for key in self.__scroll_purchase_history.create_list_text_select_checkbox():
+
+            self.__load_data_purchase_history.pop(key, None)
+
+        sld.write_data_in_purchase_history(self.__load_data_purchase_history)
+
     def del_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления товара
         """
-        pass
+        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
+
+        if not self.__scroll_purchase_history.check_selected_checkbox():
+            showerror('Ошибка', 'Выберите товар для удаления')
+            return
+
+        self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_purchase_history)
+
+        self.withdraw()
 
     def clear_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке редактирования товара
         """
-        pass
+        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
+
+        self.__confirmation_clear_favorite_page = ConfirmationForClearScrollPlace(self, self.__scroll_purchase_history)
+
+        self.withdraw()
+
+    def restore_button_click_handler(self):
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
+        Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
+        Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
+        """
+        for key in self.__scroll_purchase_history.create_list_text_select_checkbox():
+
+            remove_elem = self.__load_data_purchase_history.get(key)
+
+            if remove_elem is not None:
+                self.__load_data[key] = remove_elem
+                self.__load_data_purchase_history.pop(key, None)
+
+        showinfo('Сообщение', 'Данные успешно восстановлены')
+
+        sld.write_data_in_purchase_history(self.__load_data_purchase_history)
+        sld.write_data_in_shopping_lists(self.__load_data)
+
+        self.__scroll_purchase_history.delete_checkbox()
 
     def cancel_button_click_handler(self) -> None:
         """

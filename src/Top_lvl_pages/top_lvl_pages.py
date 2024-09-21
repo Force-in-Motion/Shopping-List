@@ -374,7 +374,7 @@ class ConfirmationPage(ctk.CTkToplevel):
         self.destroy()
 
 
-class ConfirmationForClearFavoritePage(ConfirmationPage):
+class ConfirmationForClearScrollPlace(ConfirmationPage):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
@@ -387,14 +387,80 @@ class ConfirmationForClearFavoritePage(ConfirmationPage):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        self.__main_window.load_data_favorites["f"].clear()
+        from src.Favorite_products.favorite_product import FavoriteProducts
 
         self.__scroll_frame.clear_scroll_frame()
 
-        sld.write_data_in_favorites_products(self.__main_window.load_data_favorites)
+        if isinstance(self.__main_window, FavoriteProducts):
+            self.__main_window.load_data_favorites["f"].clear()
+
+            sld.write_data_in_favorites_products(self.__main_window.load_data_favorites)
+
+            self.__main_window.deiconify()
+
+            self.destroy()
+
+            return True
+
+        self.__main_window.load_data_purchase_history.clear()
+
+        sld.write_data_in_purchase_history(self.__main_window.load_data_purchase_history)
 
         self.__main_window.deiconify()
 
         self.destroy()
 
         return True
+
+
+class OpenListPurchaseHistory(ctk.CTkToplevel):
+    def __init__(self,  main_window, scroll_frame, load_data, *args, **kwargs):
+        super().__init__(main_window, *args, **kwargs)
+
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
+        self.__load_data = load_data
+
+        self.__scroll_open_list_history = None
+
+        self.__config_window()
+        self.__config_scroll_frame()
+        self.__config_cansel_button()
+        self.__load_checkbox_products()
+
+    def __config_window(self):
+        """
+        Формирует параметры и стили главного окна приложения
+        """
+        self.title(ttl_olph)
+        self.geometry(gt_olph)
+
+    def __config_scroll_frame(self):
+        self.__scroll_open_list_history = ctk.CTkScrollableFrame(self, width=wh_solf, height=ht_solf, fg_color=fgc_solf, corner_radius=cr_solf)
+        self.__scroll_open_list_history.place(relx=0.05, rely=0.05)
+
+    def __config_cansel_button(self):
+        self.__close_btn = ctk.CTkButton(self, width=wh_cbtn, height=ht_cbtn, text=tt_cbtn, fg_color=fgc_cbtn,
+                                         text_color=tc_cbtn, border_width=bw_cbtn, hover_color=hc_cbtn, font=ft_cbtn)
+        self.__close_btn.place(relx=0.39, rely=0.83)
+        self.__close_btn.configure(command=self.close_window)
+
+    def __load_checkbox_products(self) -> None:
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает текст нажатого чекбокса и ссылку на него
+        Сравнивает полученные данные через цикл с загруженными данными из файла, таким образом находит, отмеченный чекбоксом, список
+        И загружает в скролл фрейм все продукты этого списка в виде чекбоксов
+        """
+        text, checkbox = self.__scroll_frame.get_selected_checkbox()
+
+        self.__list_name = text
+
+        for elem in self.__load_data[text]:
+
+            product = ctk.CTkLabel(master=self.__scroll_open_list_history, text=f'{', '.join(elem)}', font=ft_p, fg_color=fgc_p)
+            product.grid(sticky="w", padx=(10, 0), pady=10)
+
+    def close_window(self):
+        self.__main_window.deiconify()
+
+        self.destroy()
