@@ -1,6 +1,7 @@
-from src.Create_list.create_list_page import *
+
 from src.Main_page.config_main_page import *
 from src.All_lists.all_shoping_lists import *
+from src.Create_list.create_list_page import *
 from src.Create_list.config_create_list import *
 from src.Favorite_products.favorite_product import *
 from src.Favorite_products.config_favorite_products import *
@@ -83,6 +84,10 @@ class MainPage(ctk.CTk):
     """
     def __init__(self):
         super().__init__()
+        self.__add_list_page = None
+        self.__all_list_page = None
+        self.__favorite_products_page = None
+        self.__history_page = None
 
         self.__config_window()
         self.__config_main_frame()
@@ -118,6 +123,7 @@ class MainPage(ctk.CTk):
         """
         Обрабатывает клик по кнопке "избранное"
         """
+
         self.__favorite_products_page = FavoriteProducts(self)
         self.withdraw()
 

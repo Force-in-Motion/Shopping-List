@@ -25,7 +25,7 @@ hc_db = '#783D3D'
 ft_db = ('Helvetica', 15, 'bold')
 
 
-tt_cb = "Очистить историю"
+tt_cbt = "Очистить историю"
 wh_cb = 180
 fgc_cb = '#CD5C5C'
 ht_cb = 50
@@ -70,6 +70,12 @@ ht_bm = 250
 fgc_bm = 'transparent'
 cr_bm = 0
 
+'config checkbox'
+
+ft_sl = ('Helvetica', 18, 'bold')
+hc_sl = '#453E3E'
+fgc_sl = '#434141'
+bw_sl = 1
 
 path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
 path_round_button = r'D:\Python\School\Проекты\Shopping-List\Images\round_button.png'

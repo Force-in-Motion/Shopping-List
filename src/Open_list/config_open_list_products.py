@@ -18,10 +18,15 @@ bw_sl = 1
 
 '-------ButtonsMenuOpenListProducts-------'
 
-'config label add product'
+'config label add product in list'
 tc_apl = 'white'
 tt_apl = 'Добавить товар'
 ft_apl = ('Helvetica', 18, 'bold')
+
+'config label add product in favorite'
+tc_f = 'white'
+tt_f = 'Добавить в избранное'
+ft_f = ('Helvetica', 18, 'bold')
 
 'config menu buttons'
 size_api = (40, 40)

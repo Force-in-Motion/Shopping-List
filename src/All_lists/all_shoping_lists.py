@@ -1,9 +1,11 @@
+from src.Purchase_history.purchase_history import *
 from src.Create_list.create_list_page import CreateList
 from src.Open_list.open_list_products import *
 from src.Top_lvl_pages.top_lvl_pages import *
 from src.save_and_load_data import SaveAndLoadData as sld
 from src.All_lists.config_all_lists import *
 import customtkinter as ctk
+from tkinter import messagebox
 from PIL import Image
 
 
@@ -104,7 +106,8 @@ class ScrollAllList(ctk.CTkScrollableFrame):
         Снимает галочки со всех чекбоксов.
         """
         for checkbox in self.__list_checkboxes:
-            checkbox.deselect()
+            if self.check_selected_checkbox():
+                checkbox.deselect()
 
     def __get_count_checkboxes(self):
         return len(self.__list_checkboxes)
@@ -179,7 +182,10 @@ class AllLists(ctk.CTkToplevel):
     def __init__(self, main_window):
         super().__init__()
         self.__main_window = main_window
+
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
+        self.__load_data_purchase_history = sld.read_data_with_purchase_history() if sld.check_file_purchase_history() else {}
+
         self.__scroll_all_lists = None
         self.__all_lists_menu_btn = None
 
@@ -277,9 +283,14 @@ class AllLists(ctk.CTkToplevel):
         """
         for key in self.__scroll_all_lists.create_list_text_select_checkbox():
 
-            self.__load_data.pop(key, None)
+            remove_elem = self.__load_data.get(key)
+
+            if remove_elem is not None:
+                self.__load_data_purchase_history[key] = remove_elem
+                self.__load_data.pop(key, None)
 
         sld.write_data_in_shopping_lists(self.__load_data)
+        sld.write_data_in_purchase_history(self.__load_data_purchase_history)
 
     def del_list_button_click_handler(self) -> None:
         """

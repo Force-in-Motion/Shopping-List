@@ -1,5 +1,5 @@
 from src.Top_lvl_pages.top_lvl_pages import *
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
 from src.save_and_load_data import SaveAndLoadData as sld
 from src.Create_list.config_create_list import *
 from src.Templates import Templates

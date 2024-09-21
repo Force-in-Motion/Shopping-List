@@ -1,5 +1,6 @@
 from src.Top_lvl_pages.top_lvl_pages import *
 from src.Open_list.config_open_list_products import *
+from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
 from PIL import Image
 from src.save_and_load_data import SaveAndLoadData as sld
@@ -16,8 +17,6 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
 
         self.__list_name = None
 
-        self.__config_favorite_button()
-
         self.__load_checkbox_products()
 
     def __load_checkbox_products(self) -> None:
@@ -33,26 +32,16 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         self.__list_checkboxes.clear()
 
         for elem in self.__main_window.load_data[text]:
+
             self.__main_window.list_products.append(elem)
 
         for elem in self.__main_window.list_products:
-            product = ctk.CTkCheckBox(self, text=f'{elem[0]}, {elem[1]}, {elem[2]}', font=ft_sl, hover_color=hc_sl,
+
+            product = ctk.CTkCheckBox(self, text=f'{', '.join(elem)}', font=ft_sl, hover_color=hc_sl,
                                       fg_color=fgc_sl, border_width=bw_sl)
             product.grid(sticky="w", padx=(10, 0), pady=10)
 
             self.__list_checkboxes.append(product)
-
-    def __config_favorite_button(self) -> None:
-        """
-        Формирует в себе кнопку, отвечающую за функционал добавления товара в избранное,
-        А так же ее обработчик и устанавливает ее в указанное место окна, а так же устанавливает ее параметры и стили
-        """
-        self.__image_favorite = ctk.CTkImage(light_image=Image.open(path_favorite_button), size=size_if)
-
-        self._btn_favorite = ctk.CTkButton(self, image=self.__image_favorite, width=wh_bf, height=ht_bf, text=tt_bf,
-                                           fg_color=fgc_bf, hover_color=hc_bf)
-        self._btn_favorite.configure(command=self.__main_window.favorite_button_click_handler)
-        self._btn_favorite.grid(padx=(10, 0), pady=0, row=0, column=2)
 
     def create_checkbox(self, name_product, count_product, category) -> None:
         """
@@ -187,15 +176,23 @@ class ButtonsMenuOpenList(ctk.CTkFrame):
         self.__main_window = main_window
         self.__label_add_product = None
 
-        self.__config_label_add_product()
         self.__config_menu_buttons()
+        self.__config_label_add_product_in_list()
+        self.__config_label_add_product_in_favorite()
 
-    def __config_label_add_product(self) -> None:
+    def __config_label_add_product_in_list(self) -> None:
         """
         Формирует в себе текст, описывающий функционал кнопки добавления нового товара
         """
-        self.__add_product_label = ctk.CTkLabel(self, text_color=tc_apl, text=tt_apl, font=ft_apl)
-        self.__add_product_label.place(relx=0.1, rely=0.14)
+        self.__add_product_label_in_list = ctk.CTkLabel(self, text_color=tc_apl, text=tt_apl, font=ft_apl)
+        self.__add_product_label_in_list.place(relx=0.1, rely=0.14)
+
+    def __config_label_add_product_in_favorite(self) -> None:
+        """
+        Формирует в себе текст, описывающий функционал кнопки добавления нового товара
+        """
+        self.__add_product_label_in_favorite = ctk.CTkLabel(self, text_color=tc_f, text=tt_f, font=ft_f)
+        self.__add_product_label_in_favorite.place(relx=0.44, rely=0.14)
 
     def __config_menu_buttons(self) -> None:
         """
@@ -206,6 +203,13 @@ class ButtonsMenuOpenList(ctk.CTkFrame):
                                              fg_color=fgc_ap, hover_color=hc_ap)
         self.__add_product.configure(command=self.__main_window.add_button_click_handler)
         self.__add_product.place(relx=0.04, rely=0.1)
+
+        self.__image_favorite = ctk.CTkImage(light_image=Image.open(path_favorite_button), size=size_if)
+
+        self._btn_favorite = ctk.CTkButton(self, image=self.__image_favorite, width=wh_bf, height=ht_bf, text=tt_bf,
+                                           fg_color=fgc_bf, hover_color=hc_bf)
+        self._btn_favorite.configure(command=self.__main_window.favorite_button_click_handler)
+        self._btn_favorite.place(relx=0.38, rely=0.1)
 
         self.__edit_product = ctk.CTkButton(self, text=tt_ep, width=wh_ep, fg_color=fgc_ep, height=ht_ep,
                                             text_color=tc_ep, border_width=bw_ep, hover_color=hc_ep, font=ft_ep)
@@ -232,6 +236,7 @@ class ListProducts(ctk.CTkToplevel):
         self.__main_window = main_window
 
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
+        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {}
 
         self.__list_categories = sld.read_categories_with_json()
 
@@ -251,7 +256,7 @@ class ListProducts(ctk.CTkToplevel):
         self.__config_logo()
         self.__config_menu_buttons()
         self.__config_scroll_frame()
-        self.__config_sorted_meny()
+        self.__config_sorted_menu()
 
     def __config_window(self) -> None:
         """
@@ -273,7 +278,7 @@ class ListProducts(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера для добавления товаров
         """
-        self.__scroll_open_list = ScrollOpenListProducts(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf,corner_radius=cr_sf)
+        self.__scroll_open_list = ScrollOpenListProducts(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
         self.__scroll_open_list.place(relx=0.04, rely=0.05)
 
     def __config_menu_buttons(self) -> None:
@@ -283,7 +288,7 @@ class ListProducts(ctk.CTkToplevel):
         self.__btn_menu_open_list = ButtonsMenuOpenList(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
         self.__btn_menu_open_list.place(relx=0, rely=0.6)
 
-    def __config_sorted_meny(self):
+    def __config_sorted_menu(self):
         self.__sort_label = ctk.CTkLabel(self, text_color=tc_slb, text=tt_slb, font=ft_slb)
         self.__sort_label.place(relx=0.69, rely=0.4)
 
@@ -328,10 +333,10 @@ class ListProducts(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке редактирования товара
         """
-        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Редактировать нечего нечего')
+        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Редактировать нечего')
 
         if not self.__scroll_open_list.check_selected_checkbox():
-            showerror('Ошибка', 'Выберите список для редактирования')
+            showerror('Ошибка', 'Выберите товар для редактирования')
             return
 
         if len(self.__scroll_open_list.create_list_select_checkboxes()) != 1:
@@ -346,6 +351,8 @@ class ListProducts(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке редактирования товара
         """
+        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка','Список пуст. Сортировать нечего')
+
         selected_category = self.__category_product.get()
 
         self.__scroll_open_list.update_checkbox_place(selected_category)
@@ -370,10 +377,10 @@ class ListProducts(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке удаления товара
         """
-        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Файл пуст. Удалять нечего')
+        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
 
         if not self.__scroll_open_list.check_selected_checkbox():
-            showerror('Ошибка', 'Выберите список для удаления')
+            showerror('Ошибка', 'Выберите товар для удаления')
             return
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_open_list)
@@ -384,7 +391,19 @@ class ListProducts(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке добавления товара в список избранного
         """
-        pass
+        assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Добавлять нечего')
+
+        if not self.__scroll_open_list.check_selected_checkbox():
+            showerror('Ошибка', 'Выберите товар для добавления')
+            return
+
+        list_select_texts = self.__scroll_open_list.create_list_text_select_checkbox()
+
+        self.__load_data_favorites["f"] = list_select_texts
+
+        showinfo('Сообщение', 'Товар успехно добавлен в "Избранное"')
+
+        sld.write_data_in_favorites_products(self.__load_data_favorites)
 
     def cancel_button_click_handler(self) -> None:
         """
@@ -392,7 +411,6 @@ class ListProducts(ctk.CTkToplevel):
         """
         self.__main_window.deiconify()
 
-        self.__scroll_open_list.reset_checkboxes()
         self.destroy()
 
     def __get_scroll_all_lists(self):

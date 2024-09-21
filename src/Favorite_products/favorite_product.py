@@ -1,22 +1,107 @@
+from src.Favorite_products.config_favorite_products import *
+from src.Top_lvl_pages.top_lvl_pages import *
 import customtkinter as ctk
 from PIL import Image
-from src.Favorite_products.config_favorite_products import *
 
 
 class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для добавления товаров
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+        self.__list_checkboxes = []
 
-    def shows_purchase_history(self, name):
+        self.__load_checkbox_products()
+
+    def __load_checkbox_products(self) -> None:
         """
-        Переделать! Временный метод для проверки добавления товара в избранное
+        Внутри себя вызывает другую функцию, при помощи которой, получает текст нажатого чекбокса и ссылку на него
+        Сравнивает полученные данные через цикл с загруженными данными из файла, таким образом находит, отмеченный чекбоксом, список
+        И загружает в скролл фрейм все продукты этого списка в виде чекбоксов
         """
-        product = ctk.CTkCheckBox(self, text=f'{name}', font=('Helvetica', 18, 'bold'),
-                                  hover_color='#453E3E', fg_color='#434141', border_width=1)
-        product.grid(padx=(10, 0), pady=10)
+        for elem in self.__main_window.load_data_favorites["f"]:
+
+            self.__main_window.list_products.append(elem)
+
+            product = ctk.CTkCheckBox(self, text=f'{elem}', font=ft_sl, hover_color=hc_sl,
+                                      fg_color=fgc_sl, border_width=bw_sl)
+            product.grid(sticky="w", padx=(10, 0), pady=10)
+
+            self.__list_checkboxes.append(product)
+
+    def create_checkbox(self, name_product, count_product, category) -> None:
+        """
+        Создает чекбокс в скролл фрейме с переданными данными в качестве текста
+        :param name_product: Принимает название продукта
+        :param count_product: Принимает количество продукта
+        :param category: Принимает категорию продукта
+        :return: None
+        """
+        product = ctk.CTkCheckBox(self, text=f'{name_product}, {count_product}, {category}', font=ft_sl,
+                                  hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+        product.grid(sticky="w", padx=(10, 0), pady=10)
+
+        self.__list_checkboxes.append(product)
+
+    def check_selected_checkbox(self) -> (str, object) or bool:
+        """
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
+        Если в списке нет активных чекбоксов то возвращает False
+        """
+        for checkbox in self.__list_checkboxes:
+            if checkbox.get() == 1:
+                return True
+        return False
+
+    def create_list_text_select_checkbox(self):
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
+        :return: Возвращает список текста активных чекбоксов
+        """
+        list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_texts
+
+    def create_list_select_checkboxes(self) -> list:
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
+        :return: Возвращает список активных чекбоксов
+        """
+        list_select_checkboxes = [checkbox for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_checkboxes
+
+    def delete_checkbox(self) -> None:
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
+        Обходит этот список и удаляет его из этого списка, а так же из скролл фрейма и из списка чекбоксов
+        """
+        for checkbox in self.create_list_select_checkboxes():
+            checkbox.destroy()
+            self.__list_checkboxes.remove(checkbox)
+
+    def clear_scroll_frame(self) -> None:
+        """
+        Удаляет все чекбоксы из скролл фрейма.
+        """
+        for checkbox in self.__list_checkboxes:
+            checkbox.destroy()
+        self.__list_checkboxes.clear()
+
+    def __get_list_checkboxes(self):
+        return self.__list_checkboxes
+
+    def __get_count_checkboxes(self):
+        """
+        :return: Возвращает количество чекбоксов в списке
+        """
+        return len(self.__list_checkboxes)
+
+    list_checkboxes = property(__get_list_checkboxes)
+    count_checkboxes = property(__get_count_checkboxes)
+
 
 
 class ButtonMenuFavoriteProducts(ctk.CTkFrame):
@@ -54,7 +139,7 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
         self.__del_product.configure(command=self.__main_window.del_button_click_handler)
         self.__del_product.place(relx=0.05, rely=0.65)
 
-        self.__clear_btn = ctk.CTkButton(self, text=tt_cb, width=wh_cb, fg_color=fgc_cb, height=ht_cb, text_color=tc_cb,
+        self.__clear_btn = ctk.CTkButton(self, text=tt_cbt, width=wh_cb, fg_color=fgc_cb, height=ht_cb, text_color=tc_cb,
                                          border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
         self.__clear_btn.configure(command=self.__main_window.clear_button_click_handler)
         self.__clear_btn.place(relx=0.4, rely=0.65)
@@ -69,6 +154,15 @@ class FavoriteProducts(ctk.CTkToplevel):
     def __init__(self, main_window):
         super().__init__()
         self.__main_window = main_window
+        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {}
+
+        self.__scroll_favorite = None
+        self.__btn_menu_favorite = None
+
+        self.__list_products = []
+        self.__add_product_page = None
+        self.__confirmation_request_page = None
+        self.__confirmation_clear_favorite_page = None
 
         self.__config_window()
         self.__config_logo()
@@ -94,33 +188,61 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера для добавления покупок
         """
-        self.__scroll_frame = ScrollFavoriteProducts(self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
-        self.__scroll_frame.place(relx=0.04, rely=0.05)
+        self.__scroll_favorite = ScrollFavoriteProducts(self, master=self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
+        self.__scroll_favorite.place(relx=0.04, rely=0.05)
 
     def __config_buttons_frame(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__menu_btn = ButtonMenuFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
-        self.__menu_btn.place(relx=0, rely=0.64)
+        self.__btn_menu_favorite = ButtonMenuFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
+        self.__btn_menu_favorite.place(relx=0, rely=0.64)
 
     def add_button_click_handler(self):
         """
         Обрабатывает клик по кнопке добавления товара
         """
-        pass
+        self.__add_product_page = AddProduct(self, self.__scroll_favorite)
+
+        self.withdraw()
+
+    def del_target_condition(self):
+        """
+        Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
+        Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
+        Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
+        """
+        for product_to_remove in self.__scroll_favorite.create_list_text_select_checkbox():
+
+            self.__list_products = [product for product in self.__list_products if product != product_to_remove]
+
+        self.__load_data_favorites["f"] = self.__list_products
+
+        sld.write_data_in_favorites_products(self.load_data_favorites)
 
     def del_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления выделенного товара
         """
-        pass
+        assert self.__scroll_favorite.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
+
+        if not self.__scroll_favorite.check_selected_checkbox():
+            showerror('Ошибка', 'Выберите товар для удаления')
+            return
+
+        self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_favorite)
+
+        self.withdraw()
 
     def clear_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления всего товара в избранном
         """
-        pass
+        assert self.__scroll_favorite.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
+
+        self.__confirmation_clear_favorite_page = ConfirmationForClearFavoritePage(self, self.__scroll_favorite)
+
+        self.withdraw()
 
     def cancel_button_click_handler(self) -> None:
         """
@@ -128,3 +250,16 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         self.__main_window.deiconify()
         self.destroy()
+
+    def __get_scroll_favorite(self):
+        return self.__scroll_favorite
+
+    def __get_load__data_favorites(self):
+        return self.__load_data_favorites
+
+    def __get_list_products(self):
+        return self.__list_products
+
+    list_products = property(__get_list_products)
+    load_data_favorites = property(__get_load__data_favorites)
+    scroll_favorite = property(__get_scroll_favorite)

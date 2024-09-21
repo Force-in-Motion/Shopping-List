@@ -1,4 +1,5 @@
-
+from tkinter import messagebox
+import sys
 class Templates:
     @staticmethod
     def checks_presence_element(data, matrix):
@@ -18,8 +19,5 @@ class Templates:
             if elem == item:
                 matrix.remove(elem)
         return matrix
-
-
-
 
 

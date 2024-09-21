@@ -23,6 +23,30 @@ class SaveAndLoadData:
             return False
 
     @staticmethod
+    def check_file_favorites_products():
+        """
+        Проверяет наличие файла txt по указанному пути, в данном случае в папке
+        :return: True или False
+        """
+        file = path_data + r'\favorites_products.json'
+        if os.path.isfile(file):
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_file_purchase_history():
+        """
+        Проверяет наличие файла txt по указанному пути, в данном случае в папке
+        :return: True или False
+        """
+        file = path_data + r'\purchase_history.json'
+        if os.path.isfile(file):
+            return True
+        else:
+            return False
+
+    @staticmethod
     def read_data_with_shopping_lists() -> any:
         with open(path_data + r'\shopping_lists.json', 'r') as f:
             load_data = json.load(f)
@@ -43,6 +67,18 @@ class SaveAndLoadData:
     @staticmethod
     def write_data_in_favorites_products(load_data) -> bool:
         with open(path_data + r'\favorites_products.json', 'w') as f:
+            json.dump(load_data, f, ensure_ascii=False, indent=4)
+            return True
+
+    @staticmethod
+    def read_data_with_purchase_history() -> any:
+        with open(path_data + r'\purchase_history.json', 'r') as f:
+            load_data = json.load(f)
+            return load_data
+
+    @staticmethod
+    def write_data_in_purchase_history(load_data) -> bool:
+        with open(path_data + r'\purchase_history.json', 'w') as f:
             json.dump(load_data, f, ensure_ascii=False, indent=4)
             return True
 

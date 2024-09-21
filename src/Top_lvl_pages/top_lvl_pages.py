@@ -124,9 +124,9 @@ class EditNameShoppingList(AddNewCategory):
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
-        self.__main_window.deiconify()
-
         self.__scroll_all_lists.reset_checkboxes()
+
+        self.__main_window.deiconify()
 
         self.destroy()
 
@@ -230,7 +230,6 @@ class EditProduct(ctk.CTkToplevel):
 
         self.edit_data_check_box()
 
-        self.__scroll_frame.reset_checkboxes()
 
         self.__main_window.deiconify()
 
@@ -242,7 +241,6 @@ class EditProduct(ctk.CTkToplevel):
         """
         self.__main_window.deiconify()
 
-        self.__scroll_frame.reset_checkboxes()
 
         self.destroy()
 
@@ -274,6 +272,8 @@ class AddProduct(EditProduct):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
+        from src.Favorite_products.favorite_product import FavoriteProducts
+
         assert self.name_product != '' and self.count_product != '' and self.category != '', showerror('Ошибка', 'Заполните все поля')
 
         assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
@@ -285,6 +285,18 @@ class AddProduct(EditProduct):
         self.__scroll_frame.create_checkbox(self.name_product, self.count_product, self.category)
 
         product = [self.name_product, self.count_product, self.category]
+
+        if isinstance(self.__main_window, FavoriteProducts):
+
+            self.__main_window.load_data_favorites["f"].append(', '.join(product))
+
+            sld.write_data_in_favorites_products(self.__main_window.load_data_favorites)
+
+            self.__main_window.deiconify()
+
+            self.destroy()
+
+            return
 
         self.__main_window.list_products.append(product)
 
@@ -361,3 +373,28 @@ class ConfirmationPage(ctk.CTkToplevel):
         self.__main_window.deiconify()
         self.destroy()
 
+
+class ConfirmationForClearFavoritePage(ConfirmationPage):
+    """
+    Класс, описывающий функционал окна верхнего уровня и его виджеты
+    """
+    def __init__(self,  main_window, scroll_frame, *args, **kwargs):
+        super().__init__(main_window, scroll_frame, *args, **kwargs)
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
+
+    def confirm_button_click_handler(self) -> bool:
+        """
+        Обрабатывает клик по кнопке сохранения списка покупок
+        """
+        self.__main_window.load_data_favorites["f"].clear()
+
+        self.__scroll_frame.clear_scroll_frame()
+
+        sld.write_data_in_favorites_products(self.__main_window.load_data_favorites)
+
+        self.__main_window.deiconify()
+
+        self.destroy()
+
+        return True
