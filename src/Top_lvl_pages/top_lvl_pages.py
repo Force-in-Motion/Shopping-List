@@ -230,6 +230,7 @@ class EditProduct(ctk.CTkToplevel):
 
         self.edit_data_check_box()
 
+        self.__scroll_frame.reset_checkboxes()
 
         self.__main_window.deiconify()
 
@@ -241,6 +242,7 @@ class EditProduct(ctk.CTkToplevel):
         """
         self.__main_window.deiconify()
 
+        self.__scroll_frame.reset_checkboxes()
 
         self.destroy()
 
@@ -371,6 +373,7 @@ class ConfirmationPage(ctk.CTkToplevel):
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
         self.__main_window.deiconify()
+
         self.destroy()
 
 

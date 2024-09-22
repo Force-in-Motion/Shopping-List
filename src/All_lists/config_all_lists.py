@@ -13,7 +13,6 @@ ol_tt = "Открыть"
 el_tt = "Редактировать"
 dl_tt = "Удалить"
 cl_tt = "Отмена"
-rr_tt = "Напоминание"
 
 'config add list button'
 size_alb = (40, 40)

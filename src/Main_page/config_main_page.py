@@ -1,14 +1,18 @@
 '-------MainFrame-------'
 
 'config menu buttons'
-wh_m = 200
-ht_m = 50
-fgc_m = 'transparent'
-hc_m = '#383131'
-bc_m = "#CD5C5C"
-ft_m = ('Helvetica', 15, 'bold')
-tc_m = '#CD5C5C'
-bw_m = 1
+wh_mf = 200
+ht_mf = 70
+fgc_mf = 'transparent'
+hc_mf = '#383131'
+bc_mf = "#CD5C5C"
+ft_mf = ('Helvetica', 18, 'bold')
+tc_mf = '#CD5C5C'
+bw_mf = 1
+
+'config add list btn'
+wh_al = 450
+ht_al = 70
 
 al_tt = "Добавить список"
 ml_tt = "Мои списки"
@@ -23,16 +27,6 @@ hc_e = '#783D3D'
 tc_e = 'white'
 ft_e = ('Helvetica', 15, 'bold')
 e_tt = "Выход"
-
-'config input field'
-pht = "Поиск"
-wh_en = 460
-ht_en = 50
-tc_en = '#CD5C5C'
-phtc = '#CD5C5C'
-bc_en = "#CD5C5C"
-bw_en = 1
-ft_en = ('Helvetica', 15, 'bold')
 
 'config logo'
 l_tt = ''

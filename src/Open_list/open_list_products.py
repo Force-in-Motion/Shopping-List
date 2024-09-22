@@ -59,25 +59,27 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
 
     def update_checkbox_place(self,  selected_category: str):
         self.clear_scroll_frame()
+        # Создаем список только из тех товаров, у которых есть выбранная категория
+        sorted_products = [elem for elem in self.__main_window.list_products if selected_category in elem]
 
-        if self.__main_window.category_product.get() is None: showerror('Ошибка', 'Выберите категорию для сортировки')
-
-        flag = False
-
-        for elem in self.__main_window.list_products:
-
-            if selected_category in elem:
-
-                flag = True
-
-                product = ctk.CTkCheckBox(self, text=f'{', '.join(elem)}', font=ft_sl,
-                                          hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
-                product.grid(sticky="w", padx=(10, 0), pady=10)
-
-                self.__list_checkboxes.append(product)
-
-        if not flag:
+        if not sorted_products:
             showerror('Ошибка', 'Товары с выбранной категорией отсутствуют')
+
+            # Восстанавливаем все товары, если выбранная категория отсутствует
+            for elem in self.__main_window.list_products:
+                product = ctk.CTkCheckBox(self, text=f'{", ".join(elem)}', font=ft_sl,
+                                          hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+                product.grid(sticky="w", padx=(10,), pady=10)
+                self.__list_checkboxes.append(product)
+            return
+
+        for elem in sorted_products:
+            # Загружаем только те товары, у которых есть выбранная категория, если такие есть
+            product = ctk.CTkCheckBox(self, text=f'{', '.join(elem)}', font=ft_sl,
+                                      hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
+            product.grid(sticky="w", padx=(10, 0), pady=10)
+
+            self.__list_checkboxes.append(product)
 
     def set_new_text_for_checkbox(self, checkbox,  new_text) -> None:
         """
@@ -356,7 +358,10 @@ class ListProducts(ctk.CTkToplevel):
         assert self.__scroll_open_list.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Сортировать нечего')
 
         selected_category = self.__category_product.get()
-        print(selected_category)
+
+        if not selected_category:
+            showerror('Ошибка', 'Выберите категорию для сортировки')
+            return
 
         self.__scroll_open_list.update_checkbox_place(selected_category)
 

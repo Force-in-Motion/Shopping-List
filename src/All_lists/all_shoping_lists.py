@@ -169,12 +169,6 @@ class ButtonsMenuAllList(ctk.CTkFrame):
         self.__cancel_btn.place(relx=0.78, rely=0.65)
         self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
 
-        self.__reminder_btn = ctk.CTkButton(self, text=rr_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
-                                        border_width=bw_m, hover_color=hc_m, font=ft_m)
-        self.__reminder_btn.place(relx=0.78, rely=0.12)
-        self.__reminder_btn.configure(command=self.__main_window.reminder_button_click_handler)
-
-
 class AllLists(ctk.CTkToplevel):
     """
     Мэйн класс страницы, в себе формирует основной контейнер (фрейм), содержащий остальные виджеты страницы

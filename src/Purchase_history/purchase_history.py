@@ -282,6 +282,12 @@ class PurchaseHistory(ctk.CTkToplevel):
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
         Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
         """
+        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Восстанавливать нечего')
+
+        if not self.__scroll_purchase_history.check_selected_checkbox():
+            showerror('Ошибка', 'Выберите список для восстановления')
+            return
+
         for key in self.__scroll_purchase_history.create_list_text_select_checkbox():
 
             remove_elem = self.__load_data_purchase_history.get(key)
