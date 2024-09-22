@@ -1,7 +1,6 @@
 import json
 import os
 
-#
 
 class SaveAndLoadData:
 
@@ -95,13 +94,7 @@ class SaveAndLoadData:
             return True
 
 
-
-
-
-
-
 path_data = os.environ.get('LOCALAPPDATA') + r'\Shopping list data'
-
 
 path_categories = r'D:\Python\School\Проекты\Shopping-List\src\Categories\categories.json'
 

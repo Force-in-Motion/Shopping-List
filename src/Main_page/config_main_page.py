@@ -11,7 +11,7 @@ tc_mf = '#CD5C5C'
 bw_mf = 1
 
 'config add list btn'
-wh_al = 450
+wh_al = 470
 ht_al = 70
 
 al_tt = "Добавить список"

@@ -1,7 +1,7 @@
 '-------ButtonsMenuAddList-------'
 
 'config menu buttons'
-wh_m = 150
+wh_m = 220
 ht_m = 50
 fgc_m = '#CD5C5C'
 hc_m = '#783D3D'

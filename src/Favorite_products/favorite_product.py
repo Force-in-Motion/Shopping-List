@@ -141,12 +141,12 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
         self.__clear_btn = ctk.CTkButton(self, text=tt_cbt, width=wh_cb, fg_color=fgc_cb, height=ht_cb, text_color=tc_cb,
                                          border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
         self.__clear_btn.configure(command=self.__main_window.clear_button_click_handler)
-        self.__clear_btn.place(relx=0.4, rely=0.65)
+        self.__clear_btn.place(relx=0.375, rely=0.65)
 
         self.__cancel_btn = ctk.CTkButton(self, text=tt_cab, width=wh_cab, fg_color=fgc_cab, height=ht_cab,
                                            text_color=tc_cab, border_width=bw_cab, hover_color=hc_cab, font=ft_cab)
         self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
-        self.__cancel_btn.place(relx=0.75, rely=0.65)
+        self.__cancel_btn.place(relx=0.705, rely=0.65)
 
 
 class FavoriteProducts(ctk.CTkToplevel):
@@ -195,7 +195,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         Формирует параметры и стили контейнера кнопок
         """
         self.__btn_menu_favorite = ButtonMenuFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
-        self.__btn_menu_favorite.place(relx=0, rely=0.64)
+        self.__btn_menu_favorite.place(relx=0, rely=0.6)
 
     def add_button_click_handler(self):
         """

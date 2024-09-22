@@ -1,6 +1,6 @@
 from src.Purchase_history.config_purchase_history import *
 from src.Open_list.open_list_products import *
-from src.save_and_load_data import SaveAndLoadData as sld
+from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
 from PIL import Image
@@ -221,7 +221,7 @@ class PurchaseHistory(ctk.CTkToplevel):
         Формирует параметры и стили контейнера кнопок
         """
         self.__btn_menu_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
-        self.__btn_menu_purchase_history.place(relx=0, rely=0.64)
+        self.__btn_menu_purchase_history.place(relx=0, rely=0.6)
 
     def open_button_click_handler(self) -> None:
         """
@@ -282,7 +282,7 @@ class PurchaseHistory(ctk.CTkToplevel):
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
         Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
         """
-        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Восстанавливать нечего')
+        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
 
         if not self.__scroll_purchase_history.check_selected_checkbox():
             showerror('Ошибка', 'Выберите список для восстановления')

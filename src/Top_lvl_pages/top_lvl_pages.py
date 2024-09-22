@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from PIL import Image
 from src.Top_lvl_pages.config_top_level_pages import *
-from src.save_and_load_data import SaveAndLoadData as sld
+from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror
-from src.Templates import Templates
+from src.Templates.Templates import Templates
 
 
 class AddNewCategory(ctk.CTkToplevel):
@@ -129,12 +129,6 @@ class EditNameShoppingList(AddNewCategory):
         self.__main_window.deiconify()
 
         self.destroy()
-
-
-class AddReminder(AddNewCategory):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.title(ttl_ar)
 
 
 class EditProduct(ctk.CTkToplevel):

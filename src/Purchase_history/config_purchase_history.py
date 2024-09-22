@@ -68,7 +68,7 @@ size_l = (240, 200)
 tt_l = ''
 
 'config scroll frame'
-wh_sf = 550
+wh_sf = 520
 ht_sf = 400
 fgc_sf = 'transparent'
 cr_sf = 0

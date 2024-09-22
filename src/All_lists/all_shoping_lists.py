@@ -2,10 +2,9 @@ from src.Purchase_history.purchase_history import *
 from src.Create_list.create_list_page import CreateList
 from src.Open_list.open_list_products import *
 from src.Top_lvl_pages.top_lvl_pages import *
-from src.save_and_load_data import SaveAndLoadData as sld
+from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
 from src.All_lists.config_all_lists import *
 import customtkinter as ctk
-from tkinter import messagebox
 from PIL import Image
 
 
@@ -156,18 +155,19 @@ class ButtonsMenuAllList(ctk.CTkFrame):
 
         self.__edit_list = ctk.CTkButton(self, text=el_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                          border_width=bw_m, hover_color=hc_m, font=ft_m)
-        self.__edit_list.place(relx=0.3, rely=0.65)
+        self.__edit_list.place(relx=0.375, rely=0.65)
         self.__edit_list.configure(command=self.__main_window.edit_list_button_click_handler)
 
         self.__del_list = ctk.CTkButton(self, text=dl_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                         border_width=bw_m, hover_color=hc_m, font=ft_m)
-        self.__del_list.place(relx=0.55, rely=0.65)
+        self.__del_list.place(relx=0.705, rely=0.65)
         self.__del_list.configure(command=self.__main_window.del_list_button_click_handler)
 
         self.__cancel_btn = ctk.CTkButton(self, text=cl_tt, width=wh_m, fg_color=fgc_m, height=ht_m, text_color=tc_m,
                                        border_width=bw_m, hover_color=hc_m, font=ft_m)
-        self.__cancel_btn.place(relx=0.78, rely=0.65)
+        self.__cancel_btn.place(relx=0.705, rely=0.1)
         self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
+
 
 class AllLists(ctk.CTkToplevel):
     """
@@ -228,6 +228,8 @@ class AllLists(ctk.CTkToplevel):
         Обрабатывает клик по кнопке добавления список покупок
         """
         self.__create_shopping_list_page = CreateList(self)
+
+        self.__scroll_all_lists.reset_checkboxes()
 
         self.withdraw()
 
@@ -307,12 +309,6 @@ class AllLists(ctk.CTkToplevel):
         self.__main_window.deiconify()
 
         self.destroy()
-
-    def reminder_button_click_handler(self) -> None:
-        """
-        Обрабатывает клик по кнопке утановка напоминания
-        """
-        pass
 
     def __get_scroll_all_lists(self):
         return self.__scroll_all_lists

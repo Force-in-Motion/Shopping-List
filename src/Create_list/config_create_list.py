@@ -63,7 +63,7 @@ hc_acb = '#262424'
 '-------ButtonsMenuCreateList-------'
 
 'config buttons meny'
-wh_bm = 150
+wh_bm = 220
 ht_bm = 50
 tc_bm = 'white'
 bw_bm = 1
@@ -90,9 +90,9 @@ rb_ht = False
 wh_ccl = 900
 ht_ccl = 210
 fgc_ccl = 'transparent'
-cr_ccl= 0
+cr_ccl = 0
 
-wh_sf = 600
+wh_sf = 530
 ht_sf = 340
 fgc_sf = 'transparent'
 cr_sf = 0

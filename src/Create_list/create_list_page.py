@@ -1,8 +1,8 @@
 from src.Top_lvl_pages.top_lvl_pages import *
-from tkinter.messagebox import showerror, showinfo
-from src.save_and_load_data import SaveAndLoadData as sld
+from tkinter.messagebox import showerror
+from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
 from src.Create_list.config_create_list import *
-from src.Templates import Templates
+from src.Templates.Templates import *
 import customtkinter as ctk
 from PIL import Image
 
@@ -237,22 +237,17 @@ class ButtonsMenuCreateList(ctk.CTkFrame):
         self.__save_lst = ctk.CTkButton(self, text=tt_s, width=wh_bm, fg_color=fgc_bm, height=ht_bm, text_color=tc_bm,
                                       border_width=bw_bm, hover_color=hc_bm, font=ft_bm)
         self.__save_lst.configure(command=self.__main_window.save_button_click_handler)
-        self.__save_lst.place(relx=0.035, rely=0.2)
+        self.__save_lst.place(relx=0.05, rely=0.2)
 
         self.__edit_product = ctk.CTkButton(self, text=tt_e, width=wh_bm, fg_color=fgc_bm, height=ht_bm, text_color=tc_bm,
                                       border_width=bw_bm, hover_color=hc_bm, font=ft_bm)
         self.__edit_product.configure(command=self.__main_window.edit_button_click_handler)
-        self.__edit_product.place(relx=0.3, rely=0.2)
+        self.__edit_product.place(relx=0.375, rely=0.2)
 
         self.__del_product = ctk.CTkButton(self, text=tt_d, width=wh_bm, fg_color=fgc_bm, height=ht_bm, text_color=tc_bm,
                                      border_width=bw_bm, hover_color=hc_bm, font=ft_bm)
         self.__del_product.configure(command=self.__main_window.del_button_click_handler)
-        self.__del_product.place(relx=0.55, rely=0.2)
-
-        self.__cancel_btn = ctk.CTkButton(self, text=tt_c, width=wh_bm, fg_color=fgc_bm,height=ht_bm, text_color=tc_bm,
-                                         border_width=bw_bm, hover_color=hc_bm, font=ft_bm)
-        self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
-        self.__cancel_btn.place(relx=0.8, rely=0.2)
+        self.__del_product.place(relx=0.705, rely=0.2)
 
 
 class CreateList(ctk.CTkToplevel):
@@ -280,6 +275,7 @@ class CreateList(ctk.CTkToplevel):
         self.__config_create_list()
         self.__config_scroll_frame()
         self.__config_buttons_menu()
+        self.__config_cancel_button()
 
     def __config_window(self) -> None:
         """
@@ -294,7 +290,7 @@ class CreateList(ctk.CTkToplevel):
         Формирует параметры и стили контейнера для добавления товаров
         """
         self.__scroll_create_list = ScrollCreateList(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
-        self.__scroll_create_list.pack(pady=10, padx=(30, 240))
+        self.__scroll_create_list.pack(pady=10, padx=(0, 280))
 
     def __config_create_list(self) -> None:
         """
@@ -312,6 +308,15 @@ class CreateList(ctk.CTkToplevel):
         self.__btn_menu_create_list = ButtonsMenuCreateList(self, master=self, width=w_bm, height=h_bm, fg_color=fg_bm, corner_radius=cr_bm)
         self.__btn_menu_create_list.pack()
         self.__btn_menu_create_list.pack_propagate(False)
+
+    def __config_cancel_button(self):
+        """
+        Формирует параметры и стили контейнера для добавления элементов товара, а так же кнопок добавления товара и добавления новой категории
+        """
+        self.__cancel_btn = ctk.CTkButton(self, text=tt_c, width=wh_bm, fg_color=fgc_bm,height=ht_bm, text_color=tc_bm,
+                                         border_width=bw_bm, hover_color=hc_bm, font=ft_bm)
+        self.__cancel_btn.configure(command=self.cancel_button_click_handler)
+        self.__cancel_btn.place(relx=0.705, rely=0.6)
 
     def add_product_button_click_handler(self) -> bool or showerror:
         """

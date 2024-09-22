@@ -3,7 +3,7 @@ from src.Open_list.config_open_list_products import *
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
 from PIL import Image
-from src.save_and_load_data import SaveAndLoadData as sld
+from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
 
 
 class ScrollOpenListProducts(ctk.CTkScrollableFrame):
@@ -241,7 +241,6 @@ class ListProducts(ctk.CTkToplevel):
 
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
         self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {}
-
         self.__list_categories = sld.read_categories_with_json()
 
         self.__scroll_all_lists = scroll_all_lists
@@ -407,11 +406,17 @@ class ListProducts(ctk.CTkToplevel):
 
         list_select_texts = self.__scroll_open_list.create_list_text_select_checkbox()
 
-        self.__load_data_favorites["f"] = list_select_texts
+        for elem in list_select_texts:
+
+            if elem not in self.__load_data_favorites.get("f"):
+
+                self.__load_data_favorites.get("f").append(elem)
 
         showinfo('Сообщение', 'Товар успешно добавлен в "Избранное"')
 
         sld.write_data_in_favorites_products(self.__load_data_favorites)
+
+        self.__scroll_open_list.reset_checkboxes()
 
     def cancel_button_click_handler(self) -> None:
         """

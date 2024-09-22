@@ -61,7 +61,7 @@ class MainFrame(ctk.CTkFrame):
         """
         self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size)
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=l_tt)
-        self.__image_label.place(relx=0.67, rely=0.1)
+        self.__image_label.place(relx=0.7, rely=0.1)
 
 
 class MainPage(ctk.CTk):
