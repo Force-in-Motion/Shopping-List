@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from PIL import Image
-from src.Top_lvl_pages.config_top_level_pages import *
-from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
+from src.top.config_top_level_pages import *
+from src.load.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror
-from src.Templates.Templates import Templates
+from src.templates.templates import Templates
 
 
 class AddNewCategory(ctk.CTkToplevel):
@@ -36,7 +36,7 @@ class AddNewCategory(ctk.CTkToplevel):
         Формирует в себе поля ввода данных пользователя
         """
         self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_if, placeholder_text_color=phtc_if,
-                                              width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
+                                          width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
         self.__input_field.place(relx=0.05, rely=0.2)
 
     def __config_logo(self):
@@ -52,12 +52,12 @@ class AddNewCategory(ctk.CTkToplevel):
         Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
         """
         self.__save_btn = ctk.CTkButton(self, text=tt_sb, width=wh_sb, fg_color=fgc_sb, height=ht_sb,
-                                           text_color=tc_sb, border_width=bw_sb, hover_color=hc_sb, font=ft_sb)
+                                        text_color=tc_sb, border_width=bw_sb, hover_color=hc_sb, font=ft_sb)
         self.__save_btn.configure(command=self.save_button_click_handler)
         self.__save_btn.place(relx=0.05, rely=0.7)
 
         self.__cancel_btn = ctk.CTkButton(self, text=tt_cb, width=wh_cb, fg_color=fgc_cb, height=ht_cb,
-                                              text_color=tc_cb, border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
+                                          text_color=tc_cb, border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
         self.__cancel_btn.configure(command=self.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.62, rely=0.7)
 
@@ -268,7 +268,7 @@ class AddProduct(EditProduct):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        from src.Favorite_products.favorite_product import FavoriteProducts
+        from src.favorite.favorite_product import FavoriteProducts
 
         assert self.name_product != '' and self.count_product != '' and self.category != '', showerror('Ошибка', 'Заполните все поля')
 
@@ -384,7 +384,7 @@ class ConfirmationForClearScrollPlace(ConfirmationPage):
         """
         Обрабатывает клик по кнопке сохранения списка покупок
         """
-        from src.Favorite_products.favorite_product import FavoriteProducts
+        from src.favorite.favorite_product import FavoriteProducts
 
         self.__scroll_frame.clear_scroll_frame()
 

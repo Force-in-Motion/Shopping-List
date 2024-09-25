@@ -1,6 +1,6 @@
-from src.Purchase_history.config_purchase_history import *
-from src.Open_list.open_list_products import *
-from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
+from src.history.config_purchase_history import *
+from src.open.open_list import *
+from src.load.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
 from PIL import Image

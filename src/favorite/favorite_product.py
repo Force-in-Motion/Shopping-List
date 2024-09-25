@@ -1,5 +1,5 @@
-from src.Favorite_products.config_favorite_products import *
-from src.Top_lvl_pages.top_lvl_pages import *
+from src.favorite.config_favorite_products import *
+from src.top.top_lvl_pages import *
 import customtkinter as ctk
 from PIL import Image
 

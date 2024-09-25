@@ -1,9 +1,9 @@
-from src.Top_lvl_pages.top_lvl_pages import *
-from src.Open_list.config_open_list_products import *
+from src.top.top_lvl_pages import *
+from src.open.config_open_list import *
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
 from PIL import Image
-from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
+from src.load.save_and_load_data import SaveAndLoadData as sld
 
 
 class ScrollOpenListProducts(ctk.CTkScrollableFrame):
@@ -58,6 +58,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         self.__list_checkboxes.append(product)
 
     def update_checkbox_place(self,  selected_category: str):
+
         self.clear_scroll_frame()
         # Создаем список только из тех товаров, у которых есть выбранная категория
         sorted_products = [elem for elem in self.__main_window.list_products if selected_category in elem]
@@ -69,7 +70,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
             for elem in self.__main_window.list_products:
                 product = ctk.CTkCheckBox(self, text=f'{", ".join(elem)}', font=ft_sl,
                                           hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
-                product.grid(sticky="w", padx=(10,), pady=10)
+                product.grid(sticky="w", padx=(10, 0), pady=10)
                 self.__list_checkboxes.append(product)
             return
 

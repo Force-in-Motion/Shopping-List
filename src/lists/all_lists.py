@@ -1,9 +1,9 @@
-from src.Purchase_history.purchase_history import *
-from src.Create_list.create_list_page import CreateList
-from src.Open_list.open_list_products import *
-from src.Top_lvl_pages.top_lvl_pages import *
-from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
-from src.All_lists.config_all_lists import *
+from src.history.purchase_history import *
+from src.create.create_list import CreateList
+from src.open.open_list import *
+from src.top.top_lvl_pages import *
+from src.load.save_and_load_data import SaveAndLoadData as sld
+from src.lists.config_all_lists import *
 import customtkinter as ctk
 from PIL import Image
 

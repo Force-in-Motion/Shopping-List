@@ -1,9 +1,9 @@
-from src.Main_page.config_main_page import *
-from src.All_lists.all_shoping_lists import *
-from src.Create_list.create_list_page import *
-from src.Favorite_products.favorite_product import *
-from src.Purchase_history.purchase_history import *
-from src.Open_list.open_list_products import *
+from src.start.config_main_page import *
+from src.lists.all_lists import *
+from src.create.create_list import *
+from src.favorite.favorite_product import *
+from src.history.purchase_history import *
+from src.open.open_list import *
 import customtkinter as ctk
 from PIL import Image
 import sys
@@ -122,10 +122,6 @@ class MainPage(ctk.CTk):
         self.__history_page = PurchaseHistory(self)
         self.withdraw()
 
-    @staticmethod
-    def run_window():
-        main_page = MainPage()
-        main_page.mainloop()
+    def run_window(self):
+        self.mainloop()
 
-
-MainPage.run_window()

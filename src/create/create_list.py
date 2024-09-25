@@ -1,8 +1,8 @@
-from src.Top_lvl_pages.top_lvl_pages import *
+from src.top.top_lvl_pages import *
 from tkinter.messagebox import showerror
-from src.Save_and_load_data.save_and_load_data import SaveAndLoadData as sld
-from src.Create_list.config_create_list import *
-from src.Templates.Templates import *
+from src.load.save_and_load_data import SaveAndLoadData as sld
+from src.create.config_create_list import *
+from src.templates.templates import *
 import customtkinter as ctk
 from PIL import Image
 
@@ -297,7 +297,7 @@ class CreateList(ctk.CTkToplevel):
         Формирует параметры и стили контейнера для добавления элементов товара, а так же кнопок добавления товара и добавления новой категории
         """
         self.__data_create_list = ConfigCreateList(self, master=self, width=wh_ccl, height=ht_ccl, fg_color=fgc_ccl,
-                                                     corner_radius=cr_ccl)
+                                                   corner_radius=cr_ccl)
         self.__data_create_list.pack()
         self.__data_create_list.pack_propagate(False)
 
@@ -406,7 +406,7 @@ class CreateList(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке сохранения списка покупок, при наступлении исключения - выбрасывает окно с ошибкой
         """
-        from src.All_lists.all_shoping_lists import AllLists
+        from src.lists.all_lists import AllLists
 
         assert self.__scroll_create_list.count_checkboxes != 0, showerror('Ошибка', 'Добавьте товар или нажмите "Отмена"')
 
