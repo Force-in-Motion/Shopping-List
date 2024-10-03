@@ -127,7 +127,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
             checkbox.destroy()
         self.__list_checkboxes.clear()
 
-    def check_selected_checkbox(self) -> (str, object) or bool:
+    def check_selected_checkbox(self) -> bool:
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
         Если в списке нет активных чекбоксов то возвращает False
@@ -137,7 +137,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def get_selected_checkbox(self) -> (str, object) or bool:
+    def get_selected_checkbox(self) -> (str, object) or (None, None):
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
@@ -172,7 +172,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
     count_checkboxes = property(__get_count_checkboxes)
 
 
-class ButtonsMenuOpenList(ctk.CTkFrame):
+class MenuButtonsOpenList(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
@@ -211,10 +211,10 @@ class ButtonsMenuOpenList(ctk.CTkFrame):
 
         self.__image_favorite = ctk.CTkImage(light_image=Image.open(path_favorite_button), size=size_if)
 
-        self._btn_favorite = ctk.CTkButton(self, image=self.__image_favorite, width=wh_bf, height=ht_bf, text=tt_bf,
+        self.__favorite = ctk.CTkButton(self, image=self.__image_favorite, width=wh_bf, height=ht_bf, text=tt_bf,
                                            fg_color=fgc_bf, hover_color=hc_bf)
-        self._btn_favorite.configure(command=self.__main_window.favorite_button_click_handler)
-        self._btn_favorite.place(relx=0.38, rely=0.1)
+        self.__favorite.configure(command=self.__main_window.favorite_button_click_handler)
+        self.__favorite.place(relx=0.38, rely=0.1)
 
         self.__edit_product = ctk.CTkButton(self, text=tt_ep, width=wh_ep, fg_color=fgc_ep, height=ht_ep,
                                             text_color=tc_ep, border_width=bw_ep, hover_color=hc_ep, font=ft_ep)
@@ -232,7 +232,7 @@ class ButtonsMenuOpenList(ctk.CTkFrame):
         self.__cancel_btn.place(relx=0.705, rely=0.65)
 
 
-class ListProducts(ctk.CTkToplevel):
+class OpenList(ctk.CTkToplevel):
     """
     Мэйн класс страницы, в себе формирует основные контейнеры (фреймы), содержащие остальные виджеты страницы
     """
@@ -241,8 +241,8 @@ class ListProducts(ctk.CTkToplevel):
         self.__main_window = main_window
 
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
-        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {}
-        self.__list_categories = sld.read_categories_with_json()
+        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {"f": []}
+        self.__list_categories = sld.read_categories()
 
         self.__scroll_all_lists = scroll_all_lists
 
@@ -250,7 +250,7 @@ class ListProducts(ctk.CTkToplevel):
 
         self.__category_product = None
         self.__scroll_open_list = None
-        self.__btn_menu_open_list = None
+        self.__menu_btn_open_list = None
 
         self.__add_product_page = None
         self.__edit_product_page = None
@@ -260,7 +260,7 @@ class ListProducts(ctk.CTkToplevel):
         self.__config_logo()
         self.__config_menu_buttons()
         self.__config_scroll_frame()
-        self.__config_sorted_menu()
+        self.__config_menu_sorted()
 
     def __config_window(self) -> None:
         """
@@ -289,10 +289,10 @@ class ListProducts(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__btn_menu_open_list = ButtonsMenuOpenList(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
-        self.__btn_menu_open_list.place(relx=0, rely=0.6)
+        self.__menu_btn_open_list = MenuButtonsOpenList(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
+        self.__menu_btn_open_list.place(relx=0, rely=0.6)
 
-    def __config_sorted_menu(self):
+    def __config_menu_sorted(self):
         self.__sort_label = ctk.CTkLabel(self, text_color=tc_slb, text=tt_slb, font=ft_slb)
         self.__sort_label.place(relx=0.69, rely=0.4)
 

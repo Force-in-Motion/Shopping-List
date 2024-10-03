@@ -181,12 +181,12 @@ class PurchaseHistory(ctk.CTkToplevel):
         self.__load_data_purchase_history = sld.read_data_with_purchase_history() if sld.check_file_purchase_history() else {}
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
 
-        self.__open_list_page = None
-        self.__confirmation_request_page = None
-        self.__confirmation_clear_favorite_page = None
-
         self.__scroll_purchase_history = None
-        self.__btn_menu_purchase_history = None
+        self.__menu_btn_purchase_history = None
+
+        self.__view_list_page = None
+        self.__confirmation_request_page = None
+        self.__confirmation_clear_page = None
 
         self.__config_window()
         self.__config_logo()
@@ -220,8 +220,8 @@ class PurchaseHistory(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__btn_menu_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
-        self.__btn_menu_purchase_history.place(relx=0, rely=0.6)
+        self.__menu_btn_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
+        self.__menu_btn_purchase_history.place(relx=0, rely=0.6)
 
     def open_button_click_handler(self) -> None:
         """
@@ -233,7 +233,7 @@ class PurchaseHistory(ctk.CTkToplevel):
             showerror('Ошибка', 'Выберите список чтобы открыть')
             return
 
-        self.__open_list_page = OpenListPurchaseHistory(self, self.__scroll_purchase_history, self.__load_data_purchase_history)
+        self.__view_list_page = ViewListPurchaseHistory(self, self.__scroll_purchase_history, self.__load_data_purchase_history)
 
         self.__scroll_purchase_history.reset_checkboxes()
 
@@ -272,7 +272,7 @@ class PurchaseHistory(ctk.CTkToplevel):
         """
         assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
 
-        self.__confirmation_clear_favorite_page = ConfirmationForClearScrollPlace(self, self.__scroll_purchase_history)
+        self.__confirmation_clear_page = ConfirmationClearScrollPlace(self, self.__scroll_purchase_history)
 
         self.withdraw()
 

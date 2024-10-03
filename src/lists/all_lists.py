@@ -8,12 +8,12 @@ import customtkinter as ctk
 from PIL import Image
 
 
-class ScrollAllList(ctk.CTkScrollableFrame):
+class ScrollAllLists(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для добавления списков покупок
     """
-    def __init__(self, main_window, master,  **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args,  **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
         self.__list_checkboxes = []
 
@@ -89,7 +89,7 @@ class ScrollAllList(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def get_selected_checkbox(self) -> (str, object) or bool:
+    def get_selected_checkbox(self) -> (str, object) or (None, None):
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
@@ -114,12 +114,12 @@ class ScrollAllList(ctk.CTkScrollableFrame):
     count_checkboxes = property(__get_count_checkboxes)
 
 
-class ButtonsMenuAllList(ctk.CTkFrame):
+class MenuButtonsAllLists(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, main_window, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
         self.__label_add_list = None
@@ -180,18 +180,18 @@ class AllLists(ctk.CTkToplevel):
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
         self.__load_data_purchase_history = sld.read_data_with_purchase_history() if sld.check_file_purchase_history() else {}
 
-        self.__scroll_all_lists = None
-        self.__all_lists_menu_btn = None
-
         self.__create_shopping_list_page = None
         self.__confirmation_request_page = None
         self.__edit_name_shopping_list_page = None
         self.__open_list_page = None
 
+        self.__scroll_all_lists = None
+        self.__meny_btn_all_lists = None
+
         self.__config_window()
+        self.__config_logo()
         self.__config_scroll_frame()
         self.__config_menu_buttons()
-        self.__config_logo()
 
     def __config_window(self) -> None:
         """
@@ -205,15 +205,15 @@ class AllLists(ctk.CTkToplevel):
         """
         Формирует параметры и стили контейнера для добавления спсисков покупок
         """
-        self.__scroll_all_lists = ScrollAllList(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
+        self.__scroll_all_lists = ScrollAllLists(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
         self.__scroll_all_lists.place(relx=0.04, rely=0.05)
 
     def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__all_lists_menu_btn = ButtonsMenuAllList(self,  master=self, width=wh_bf, height=ht_bf, fg_color=fgc_bf, corner_radius=cr_sf)
-        self.__all_lists_menu_btn.place(relx=0, rely=0.6)
+        self.__meny_btn_all_lists = MenuButtonsAllLists(self,  master=self, width=wh_bf, height=ht_bf, fg_color=fgc_bf, corner_radius=cr_sf)
+        self.__meny_btn_all_lists.place(relx=0, rely=0.6)
 
     def __config_logo(self) -> None:
         """
@@ -247,7 +247,7 @@ class AllLists(ctk.CTkToplevel):
             showerror('Ошибка', 'Одновременно открыть можно только 1 список')
             return
 
-        self.__open_list_page = ListProducts(self, self.__scroll_all_lists)
+        self.__open_list_page = OpenList(self, self.__scroll_all_lists)
 
         self.__scroll_all_lists.reset_checkboxes()
 
@@ -310,7 +310,7 @@ class AllLists(ctk.CTkToplevel):
 
         self.destroy()
 
-    def __get_scroll_all_lists(self):
+    def __get_scroll_frame(self):
         return self.__scroll_all_lists
 
     def __get_create_shopping_list_page(self):
@@ -320,7 +320,7 @@ class AllLists(ctk.CTkToplevel):
         return self.__load_data
 
     load_data = property(__get_load_data)
-    scroll_all_lists = property(__get_scroll_all_lists)
+    scroll_all_lists = property(__get_scroll_frame)
     create_shopping_list_page = property(__get_create_shopping_list_page)
 
 

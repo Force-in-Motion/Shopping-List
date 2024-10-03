@@ -83,13 +83,13 @@ class SaveAndLoadData:
             return True
 
     @staticmethod
-    def read_categories_with_json() -> any:
+    def read_categories() -> any:
         with open(path_categories, 'r') as f:
             load_data = json.load(f)
             return load_data
 
     @staticmethod
-    def write_categories_in_json(load_data):
+    def write_categories(load_data):
         with open(path_categories, 'w') as f:
             json.dump(load_data, f, ensure_ascii=False, indent=4)
             return True

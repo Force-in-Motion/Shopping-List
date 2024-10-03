@@ -45,7 +45,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
 
         self.__list_checkboxes.append(product)
 
-    def check_selected_checkbox(self) -> (str, object) or bool:
+    def check_selected_checkbox(self) -> bool:
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
         Если в списке нет активных чекбоксов то возвращает False
@@ -55,14 +55,6 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def create_list_text_select_checkbox(self):
-        """
-        Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
-        :return: Возвращает список текста активных чекбоксов
-        """
-        list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
-
-        return list_select_texts
 
     def create_list_select_checkboxes(self) -> list:
         """
@@ -72,6 +64,16 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
         list_select_checkboxes = [checkbox for checkbox in self.__list_checkboxes if checkbox.get() == 1]
 
         return list_select_checkboxes
+
+
+    def create_list_text_select_checkbox(self):
+        """
+        Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
+        :return: Возвращает список текста активных чекбоксов
+        """
+        list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
+
+        return list_select_texts
 
     def delete_checkbox(self) -> None:
         """
@@ -90,6 +92,13 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
             checkbox.destroy()
         self.__list_checkboxes.clear()
 
+    def reset_checkboxes(self) -> None:
+        """
+        Снимает галочки со всех чекбоксов.
+        """
+        for checkbox in self.__list_checkboxes:
+            checkbox.deselect()
+
     def __get_list_checkboxes(self):
         return self.__list_checkboxes
 
@@ -103,7 +112,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     count_checkboxes = property(__get_count_checkboxes)
 
 
-class ButtonMenuFavoriteProducts(ctk.CTkFrame):
+class MenuButtonsFavoriteProducts(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
@@ -111,10 +120,10 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
-        self.__add_list_label = None
+        self.__add_product_label = None
 
         self.__config_label_add_product()
-        self.__config_buttons_menu()
+        self.__config_menu_buttons()
 
     def __config_label_add_product(self) -> None:
         """
@@ -123,15 +132,15 @@ class ButtonMenuFavoriteProducts(ctk.CTkFrame):
         self.__label_add_list = ctk.CTkLabel(self, text_color=tc_all, text=tt_all, font=ft_all)
         self.__label_add_list.place(relx=0.1, rely=0.14)
 
-    def __config_buttons_menu(self) -> None:
+    def __config_menu_buttons(self) -> None:
         """
         Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
         """
-        self.__add_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ali)
-        self.__add_list = ctk.CTkButton(self, image=self.__add_list_image_button, width=wh_alb, height=ht_alb,
+        self.__add_product_image = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ali)
+        self.__add_product = ctk.CTkButton(self, image=self.__add_product_image, width=wh_alb, height=ht_alb,
                                             text=tt_alb, fg_color=fgc_alb, hover_color=hc_alb)
-        self.__add_list.configure(command=self.__main_window.add_button_click_handler)
-        self.__add_list.place(relx=0.04, rely=0.1)
+        self.__add_product.configure(command=self.__main_window.add_button_click_handler)
+        self.__add_product.place(relx=0.04, rely=0.1)
 
         self.__del_product = ctk.CTkButton(self, text=tt_db, width=wh_db, fg_color=fgc_db, height=ht_db, text_color=tc_db,
                                        border_width=bw_db, hover_color=hc_db, font=ft_db)
@@ -153,10 +162,10 @@ class FavoriteProducts(ctk.CTkToplevel):
     def __init__(self, main_window):
         super().__init__()
         self.__main_window = main_window
-        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {}
+        self.__load_data_favorites = sld.read_data_with_favorites_products() if sld.check_file_favorites_products() else {"f": []}
 
         self.__scroll_favorite = None
-        self.__btn_menu_favorite = None
+        self.__menu_btn_favorite = None
 
         self.__list_products = []
         self.__add_product_page = None
@@ -166,7 +175,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__config_window()
         self.__config_logo()
         self.__config_scroll_frame()
-        self.__config_buttons_frame()
+        self.__config_menu_buttons()
 
     def __config_window(self) -> None:
         """
@@ -190,12 +199,12 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__scroll_favorite = ScrollFavoriteProducts(self, master=self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
         self.__scroll_favorite.place(relx=0.04, rely=0.05)
 
-    def __config_buttons_frame(self) -> None:
+    def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
-        self.__btn_menu_favorite = ButtonMenuFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
-        self.__btn_menu_favorite.place(relx=0, rely=0.6)
+        self.__menu_btn_favorite = MenuButtonsFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
+        self.__menu_btn_favorite.place(relx=0, rely=0.6)
 
     def add_button_click_handler(self):
         """
@@ -239,7 +248,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         assert self.__scroll_favorite.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
 
-        self.__confirmation_clear_favorite_page = ConfirmationForClearScrollPlace(self, self.__scroll_favorite)
+        self.__confirmation_clear_favorite_page = ConfirmationClearScrollPlace(self, self.__scroll_favorite)
 
         self.withdraw()
 

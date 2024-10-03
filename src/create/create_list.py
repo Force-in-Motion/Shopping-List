@@ -12,8 +12,8 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
     Класс- контейнер, формирует область со скролом для добавления товаров
     """
 
-    def __init__(self, main_window, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
         self.__list_checkboxes = []
 
@@ -68,7 +68,7 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
             checkbox.destroy()
             self.__list_checkboxes.remove(checkbox)
 
-    def check_selected_checkbox(self) -> (str, object) or bool:
+    def check_selected_checkbox(self) -> bool:
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
         Если в списке нет активных чекбоксов то возвращает False
@@ -78,7 +78,7 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def get_selected_checkbox(self) -> (str, object) or bool:
+    def get_selected_checkbox(self) -> (str, ctk.CTkCheckBox) or (None, None):
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
@@ -114,8 +114,8 @@ class ConfigCreateList(ctk.CTkFrame):
     Класс- контейнер для виджетов, которые формируют конфигурацию и составляющие списка покупок,
     Такие как название списка, название товара, категория и его количество, а так же логотип приложения
     """
-    def __init__(self, main_window, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
         self.__name_shopping_list = None
@@ -125,12 +125,12 @@ class ConfigCreateList(ctk.CTkFrame):
 
         self.__label_add_product = None
 
-        self.__list_categories = sld.read_categories_with_json()
+        self.__list_categories = sld.read_categories()
 
         self.__config_logo()
         self.__config_input_fields()
         self.__config_category_list()
-        self.__config_add_buttons()
+        self.__config_buttons_add()
         self.__config_label_add_product()
 
     def __config_logo(self) -> None:
@@ -173,7 +173,7 @@ class ConfigCreateList(ctk.CTkFrame):
         self.__label_add_product = ctk.CTkLabel(self, text=tt_apl, font=ft_apl)
         self.__label_add_product.place(relx=0.1, rely=0.75)
 
-    def __config_add_buttons(self) -> None:
+    def __config_buttons_add(self) -> None:
         """
         Формирует в себе кнопки, отвечающие за добавление нового товара и добавление новой категории, а так же устанавливает их параметры и стили
         """
@@ -219,17 +219,17 @@ class ConfigCreateList(ctk.CTkFrame):
     category = property(__get_category_product)
 
 
-class ButtonsMenuCreateList(ctk.CTkFrame):
+class MenuButtonsCreateList(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, main_window, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
-        self.__config_buttons_menu()
+        self.__config_menu_buttons()
 
-    def __config_buttons_menu(self) -> None:
+    def __config_menu_buttons(self) -> None:
         """
         Формирует в себе кнопки, отвечающие за общий функционал страницы,
         А так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
@@ -267,14 +267,14 @@ class CreateList(ctk.CTkToplevel):
 
         self.__data_create_list = None
         self.__scroll_create_list = None
-        self.__btn_menu_create_list = None
+        self.__menu_btn_create_list = None
 
         self.__list_products = []
 
         self.__config_window()
         self.__config_create_list()
         self.__config_scroll_frame()
-        self.__config_buttons_menu()
+        self.__config_menu_buttons()
         self.__config_cancel_button()
 
     def __config_window(self) -> None:
@@ -301,13 +301,13 @@ class CreateList(ctk.CTkToplevel):
         self.__data_create_list.pack()
         self.__data_create_list.pack_propagate(False)
 
-    def __config_buttons_menu(self) -> None:
+    def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера для добавления элементов товара, а так же кнопок добавления товара и добавления новой категории
         """
-        self.__btn_menu_create_list = ButtonsMenuCreateList(self, master=self, width=w_bm, height=h_bm, fg_color=fg_bm, corner_radius=cr_bm)
-        self.__btn_menu_create_list.pack()
-        self.__btn_menu_create_list.pack_propagate(False)
+        self.__menu_btn_create_list = MenuButtonsCreateList(self, master=self, width=w_bm, height=h_bm, fg_color=fg_bm, corner_radius=cr_bm)
+        self.__menu_btn_create_list.pack()
+        self.__menu_btn_create_list.pack_propagate(False)
 
     def __config_cancel_button(self):
         """
@@ -318,7 +318,7 @@ class CreateList(ctk.CTkToplevel):
         self.__cancel_btn.configure(command=self.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.705, rely=0.6)
 
-    def add_product_button_click_handler(self) -> bool or showerror:
+    def add_product_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке добавления товара в список, при наступлении исключения - выбрасывает окно с ошибкой
         """
@@ -336,7 +336,6 @@ class CreateList(ctk.CTkToplevel):
 
         self.__list_products.append(product)
 
-        return True
 
     def add_category_button_click_handler(self) -> None:
         """

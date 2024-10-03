@@ -14,14 +14,14 @@ class AddNewCategory(ctk.CTkToplevel):
 
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
-        self.__list_categories = sld.read_categories_with_json()
+        self.__list_categories = sld.read_categories()
 
         self.__input_field = None
 
         self.__config_logo()
         self.__config_window()
         self.__config_input_field()
-        self.__config_buttons()
+        self.__config_menu_buttons()
 
     def __config_window(self):
         """
@@ -47,7 +47,7 @@ class AddNewCategory(ctk.CTkToplevel):
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.67, rely=0.1)
 
-    def __config_buttons(self):
+    def __config_menu_buttons(self):
         """
         Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
         """
@@ -69,7 +69,7 @@ class AddNewCategory(ctk.CTkToplevel):
 
         self.__list_categories["cs"].append(self.input_data)
 
-        sld.write_categories_in_json(self.__list_categories)
+        sld.write_categories(self.__list_categories)
 
         self.__main_window.deiconify()
 
@@ -144,7 +144,7 @@ class EditProduct(ctk.CTkToplevel):
         self.__main_window = main_window
         self.__scroll_frame = scroll_frame
 
-        self.__list_categories = sld.read_categories_with_json()
+        self.__list_categories = sld.read_categories()
 
         self.__config_window()
         self.__config_logo()
@@ -366,12 +366,14 @@ class ConfirmationPage(ctk.CTkToplevel):
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
         """
+        self.__scroll_frame.reset_checkboxes()
+
         self.__main_window.deiconify()
 
         self.destroy()
 
 
-class ConfirmationForClearScrollPlace(ConfirmationPage):
+class ConfirmationClearScrollPlace(ConfirmationPage):
     """
     Класс, описывающий функционал окна верхнего уровня и его виджеты
     """
@@ -410,7 +412,7 @@ class ConfirmationForClearScrollPlace(ConfirmationPage):
         return True
 
 
-class OpenListPurchaseHistory(ctk.CTkToplevel):
+class ViewListPurchaseHistory(ctk.CTkToplevel):
     def __init__(self,  main_window, scroll_frame, load_data, *args, **kwargs):
         super().__init__(main_window, *args, **kwargs)
 
@@ -418,7 +420,7 @@ class OpenListPurchaseHistory(ctk.CTkToplevel):
         self.__scroll_frame = scroll_frame
         self.__load_data = load_data
 
-        self.__scroll_open_list_history = None
+        self.__scroll_view_list_history = None
 
         self.__config_window()
         self.__config_scroll_frame()
@@ -433,8 +435,8 @@ class OpenListPurchaseHistory(ctk.CTkToplevel):
         self.geometry(gt_olph)
 
     def __config_scroll_frame(self):
-        self.__scroll_open_list_history = ctk.CTkScrollableFrame(self, width=wh_solf, height=ht_solf, fg_color=fgc_solf, corner_radius=cr_solf)
-        self.__scroll_open_list_history.place(relx=0.05, rely=0.05)
+        self.__scroll_view_list_history = ctk.CTkScrollableFrame(self, width=wh_solf, height=ht_solf, fg_color=fgc_solf, corner_radius=cr_solf)
+        self.__scroll_view_list_history.place(relx=0.05, rely=0.05)
 
     def __config_cansel_button(self):
         self.__close_btn = ctk.CTkButton(self, width=wh_cbtn, height=ht_cbtn, text=tt_cbtn, fg_color=fgc_cbtn,
@@ -454,10 +456,12 @@ class OpenListPurchaseHistory(ctk.CTkToplevel):
 
         for elem in self.__load_data[text]:
 
-            product = ctk.CTkLabel(master=self.__scroll_open_list_history, text=f'{', '.join(elem)}', font=ft_p, fg_color=fgc_p)
+            product = ctk.CTkLabel(master=self.__scroll_view_list_history, text=f'{', '.join(elem)}', font=ft_p, fg_color=fgc_p)
             product.grid(sticky="w", padx=(10, 0), pady=10)
 
     def close_window(self):
+        self.__scroll_frame.reset_checkboxes()
+
         self.__main_window.deiconify()
 
         self.destroy()
