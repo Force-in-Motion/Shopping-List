@@ -144,7 +144,7 @@ class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
         self.__open_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ol)
         self.__open_list = ctk.CTkButton(self, image=self.__open_list_image_button, width=wh_ol, height=ht_ol,
                                             text=tt_ol, fg_color=fgc_ol, hover_color=hc_ol)
-        self.__open_list.configure(command=self.__main_window.open_button_click_handler)
+        self.__open_list.configure(command=self.__main_window.view_button_click_handler)
         self.__open_list.place(relx=0.04, rely=0.1)
 
         self.__restore_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ol)
@@ -223,7 +223,7 @@ class PurchaseHistory(ctk.CTkToplevel):
         self.__menu_btn_purchase_history = ButtonsMenuPurchaseHistory(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
         self.__menu_btn_purchase_history.place(relx=0, rely=0.6)
 
-    def open_button_click_handler(self) -> None:
+    def view_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке удаления товара
         """
@@ -233,7 +233,11 @@ class PurchaseHistory(ctk.CTkToplevel):
             showerror('Ошибка', 'Выберите список чтобы открыть')
             return
 
-        self.__view_list_page = ViewListPurchaseHistory(self, self.__scroll_purchase_history, self.__load_data_purchase_history)
+        if len(self.__scroll_purchase_history.create_list_select_checkboxes()) != 1:
+            showerror('Ошибка', 'Одновременно открыть можно только 1 список')
+            return
+
+        self.__view_list_page = ViewListPurchaseHistory(self, self.__scroll_purchase_history)
 
         self.__scroll_purchase_history.reset_checkboxes()
 

@@ -137,19 +137,19 @@ class EditProduct(ctk.CTkToplevel):
     """
     def __init__(self, main_window, scroll_frame, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__main_window = main_window
+        self.__scroll_frame = scroll_frame
+
         self.__name_product = None
         self.__count_product = None
         self.__category_product = None
-
-        self.__main_window = main_window
-        self.__scroll_frame = scroll_frame
 
         self.__list_categories = sld.read_categories()
 
         self.__config_window()
         self.__config_logo()
         self.__config_input_fields()
-        self.__config_buttons_menu()
+        self.__config_menu_buttons()
         self.__config_category_list()
 
     def __config_window(self):
@@ -189,7 +189,7 @@ class EditProduct(ctk.CTkToplevel):
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.75, rely=0.1)
 
-    def __config_buttons_menu(self):
+    def __config_menu_buttons(self):
         """
         Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
         """
@@ -205,7 +205,7 @@ class EditProduct(ctk.CTkToplevel):
         self.__cancel_btn.configure(command=self.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.71, rely=0.7)
 
-    def edit_data_check_box(self):
+    def edit_data_checkbox(self):
         new_text = f'{self.name_product}, {self.count_product}, {self.category}'
 
         old_text, check_box = self.__scroll_frame.get_selected_checkbox()
@@ -222,7 +222,7 @@ class EditProduct(ctk.CTkToplevel):
 
         assert self.count_product.isdigit(), showerror('Ошибка', 'Количество товара может быть только целым числом')
 
-        self.edit_data_check_box()
+        self.edit_data_checkbox()
 
         self.__scroll_frame.reset_checkboxes()
 
@@ -311,14 +311,14 @@ class ConfirmationPage(ctk.CTkToplevel):
     """
     def __init__(self,  main_window, scroll_frame, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__text_label = None
-
         self.__main_window = main_window
         self.__scroll_frame = scroll_frame
 
+        self.__label_confirm = None
+
         self.__config_window()
         self.__config_label_confirm()
-        self.__config_button_menu()
+        self.__config_menu_buttons()
 
     def __config_window(self):
         """
@@ -334,7 +334,7 @@ class ConfirmationPage(ctk.CTkToplevel):
         self.__label_confirm = ctk.CTkLabel(self, width=wh_cl, height=ht_cl, text=tt_cl, text_color=tc_cl, font=ft_cl)
         self.__label_confirm.place(relx=0.3, rely=0.1)
 
-    def __config_button_menu(self):
+    def __config_menu_buttons(self):
         """
         Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
         """
@@ -413,18 +413,18 @@ class ConfirmationClearScrollPlace(ConfirmationPage):
 
 
 class ViewListPurchaseHistory(ctk.CTkToplevel):
-    def __init__(self,  main_window, scroll_frame, load_data, *args, **kwargs):
-        super().__init__(main_window, *args, **kwargs)
+    def __init__(self,  main_window, scroll_frame, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.__main_window = main_window
         self.__scroll_frame = scroll_frame
-        self.__load_data = load_data
+        self.__load_purchase_history = sld.read_data_with_purchase_history() if sld.check_file_purchase_history() else {}
 
         self.__scroll_view_list_history = None
 
         self.__config_window()
         self.__config_scroll_frame()
-        self.__config_cansel_button()
+        self.__config_cancel_button()
         self.__load_checkbox_products()
 
     def __config_window(self):
@@ -438,11 +438,11 @@ class ViewListPurchaseHistory(ctk.CTkToplevel):
         self.__scroll_view_list_history = ctk.CTkScrollableFrame(self, width=wh_solf, height=ht_solf, fg_color=fgc_solf, corner_radius=cr_solf)
         self.__scroll_view_list_history.place(relx=0.05, rely=0.05)
 
-    def __config_cansel_button(self):
+    def __config_cancel_button(self):
         self.__close_btn = ctk.CTkButton(self, width=wh_cbtn, height=ht_cbtn, text=tt_cbtn, fg_color=fgc_cbtn,
                                          text_color=tc_cbtn, border_width=bw_cbtn, hover_color=hc_cbtn, font=ft_cbtn)
         self.__close_btn.place(relx=0.39, rely=0.83)
-        self.__close_btn.configure(command=self.close_window)
+        self.__close_btn.configure(command=self.cancel_button_click_handler)
 
     def __load_checkbox_products(self) -> None:
         """
@@ -454,12 +454,12 @@ class ViewListPurchaseHistory(ctk.CTkToplevel):
 
         self.__list_name = text
 
-        for elem in self.__load_data[text]:
+        for elem in self.__load_purchase_history[text]:
 
             product = ctk.CTkLabel(master=self.__scroll_view_list_history, text=f'{', '.join(elem)}', font=ft_p, fg_color=fgc_p)
             product.grid(sticky="w", padx=(10, 0), pady=10)
 
-    def close_window(self):
+    def cancel_button_click_handler(self):
         self.__scroll_frame.reset_checkboxes()
 
         self.__main_window.deiconify()

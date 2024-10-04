@@ -10,18 +10,13 @@ import sys
 
 
 class MainFrame(ctk.CTkFrame):
-    def __init__(self, main_window, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, main_window, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
-        self.__all_list_page = None
-        self.__add_list_page = None
-        self.__favorite_products_page = None
-        self.__history_page = None
-
+        self.__config_logo()
         self.__config_menu_buttons()
         self.__config_exit_button()
-        self.__config_logo()
 
     def __config_menu_buttons(self) -> None:
         """
@@ -73,7 +68,7 @@ class MainPage(ctk.CTk):
         self.__load_data = sld.read_data_with_shopping_lists() if sld.check_file_shopping_lists() else {}
 
         self.__add_list_page = None
-        self.__all_list_page = None
+        self.__all_lists_page = None
         self.__history_page = None
         self.__favorite_products_page = None
 
@@ -104,7 +99,7 @@ class MainPage(ctk.CTk):
         """
         Обрабатывает клик по кнопке "мои списки"
         """
-        self.__all_list_page = AllLists(self)
+        self.__all_lists_page = AllLists(self)
         self.withdraw()
 
     def favorites_button_click_handler(self) -> None:
@@ -122,6 +117,6 @@ class MainPage(ctk.CTk):
         self.__history_page = PurchaseHistory(self)
         self.withdraw()
 
-    def run_window(self):
+    def run_program(self):
         self.mainloop()
 

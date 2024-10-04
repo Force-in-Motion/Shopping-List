@@ -168,6 +168,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__menu_btn_favorite = None
 
         self.__list_products = []
+
         self.__add_product_page = None
         self.__confirmation_request_page = None
         self.__confirmation_clear_favorite_page = None
