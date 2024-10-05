@@ -43,19 +43,9 @@ ft_cb = ('Helvetica', 15, 'bold')
 
 
 
-
-
 '-------EditNameShoppingList-------'
 ttl_ensl = 'Редактирование названия списка'
 pht_ensl = 'Введите новое название списка'
-
-
-
-
-
-'-------AddReminder-------'
-ttl_ar = 'Установка напоминания'
-
 
 
 
@@ -160,7 +150,7 @@ ft_cbtn = ('Helvetica', 15, 'bold')
 ft_p = ('Helvetica', 18, 'bold')
 fgc_p = 'transparent'
 
-path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
+path_logo = r'Images\logo.png'
 
 
 

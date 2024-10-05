@@ -114,32 +114,7 @@ ft_c = ('Helvetica', 15, 'bold')
 st_c = 'readonly'
 bc_c = '#3D3935'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
-path_round_button = r'D:\Python\School\Проекты\Shopping-List\Images\round_button.png'
-path_favorite_button = r'D:\Python\School\Проекты\Shopping-List\Images\heart.png'
+path_logo = r'Images\logo.png'
+path_round_button = r'Images\round_button.png'
+path_favorite_button = r'Images\heart.png'
+path_glass_button = r'Images\glass.png'

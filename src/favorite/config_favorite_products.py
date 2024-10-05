@@ -49,7 +49,7 @@ ft_cab = ('Helvetica', 15, 'bold')
 
 'config window'
 ttl = 'Ибранное'
-gt = '900x700+600+100'
+gt = '900x700+700+100'
 
 
 'config logo'
@@ -77,5 +77,5 @@ hc_sl = '#453E3E'
 fgc_sl = '#434141'
 bw_sl = 1
 
-path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
-path_round_button = r'D:\Python\School\Проекты\Shopping-List\Images\round_button.png'
+path_logo = r'Images\logo.png'
+path_round_button = r'Images\round_button.png'

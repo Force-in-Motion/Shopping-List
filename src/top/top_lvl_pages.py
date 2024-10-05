@@ -73,7 +73,7 @@ class AddNewCategory(ctk.CTkToplevel):
 
         self.__main_window.deiconify()
 
-        self.__main_window._CreateList__data_create_list._ConfigCreateList__category_product.configure(values=self.__list_categories.get("cs"))
+        self.__main_window.data_create_list.category_list.configure(values=self.__list_categories.get("cs"))
 
         self.destroy()
 
@@ -98,6 +98,15 @@ class EditNameShoppingList(AddNewCategory):
         self.__scroll_all_lists = scroll_all_lists
 
         self.title(ttl_ensl)
+        self.__config_input_field()
+
+    def __config_input_field(self):
+        """
+        Формирует в себе поля ввода данных пользователя
+        """
+        self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_ensl, placeholder_text_color=phtc_if,
+                                          width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
+        self.__input_field.place(relx=0.05, rely=0.2)
 
     def save_button_click_handler(self) -> None:
         """

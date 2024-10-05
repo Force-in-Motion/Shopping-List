@@ -302,7 +302,7 @@ class OpenList(ctk.CTkToplevel):
         self.__category_product.place(relx=0.69, rely=0.47)
         self.__category_product.bind("<<ComboboxSelected>>", self.sort_button_click_handler)
 
-        self.__sort_products_image = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_sp)
+        self.__sort_products_image = ctk.CTkImage(light_image=Image.open(path_glass_button), size=size_sp)
         self.__sort_products = ctk.CTkButton(self, image=self.__sort_products_image, text=tt_sp, width=wh_sp,
                                              fg_color=fgc_sp, height=ht_sp, hover_color=hc_sp)
         self.__sort_products.configure(command=self.sort_button_click_handler)
@@ -314,7 +314,8 @@ class OpenList(ctk.CTkToplevel):
         """
         self.__add_product_page = AddProduct(self, self.__scroll_open_list)
 
-        self.withdraw()
+        self.__add_product_page.grab_set()
+
 
     def update_load_data(self, old_text, new_text) -> None:
         """
@@ -349,7 +350,8 @@ class OpenList(ctk.CTkToplevel):
 
         self.__edit_product_page = EditProduct(self, self.__scroll_open_list)
 
-        self.withdraw()
+        self.__edit_product_page.grab_set()
+
 
     def sort_button_click_handler(self) -> None:
         """
@@ -393,7 +395,8 @@ class OpenList(ctk.CTkToplevel):
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_open_list)
 
-        self.withdraw()
+        self.__confirmation_request_page.grab_set()
+
 
     def favorite_button_click_handler(self) -> None:
         """

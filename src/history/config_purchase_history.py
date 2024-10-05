@@ -79,10 +79,9 @@ ht_mb = 250
 fgc_mb = 'transparent'
 cr_mb = 0
 
-path_round_button = r'D:\Python\School\Проекты\Shopping-List\Images\round_button.png'
-path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
-
-
+path_logo = r'Images\logo.png'
+path_round_button = r'Images\round_button.png'
+path_reset_button = r'Images\reset.png'
 
 
 

@@ -147,8 +147,8 @@ class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
         self.__open_list.configure(command=self.__main_window.view_button_click_handler)
         self.__open_list.place(relx=0.04, rely=0.1)
 
-        self.__restore_list_image_button = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ol)
-        self.__restore = ctk.CTkButton(self, image=self.__open_list_image_button, width=wh_ol, height=ht_ol,
+        self.__restore_list_image_button = ctk.CTkImage(light_image=Image.open(path_reset_button), size=size_ol)
+        self.__restore = ctk.CTkButton(self, image=self.__restore_list_image_button, width=wh_ol, height=ht_ol,
                                             text=tt_ol, fg_color=fgc_ol, hover_color=hc_ol)
         self.__restore.configure(command=self.__main_window.restore_button_click_handler)
         self.__restore.place(relx=0.38, rely=0.1)
@@ -239,9 +239,10 @@ class PurchaseHistory(ctk.CTkToplevel):
 
         self.__view_list_page = ViewListPurchaseHistory(self, self.__scroll_purchase_history)
 
+        self.__view_list_page.grab_set()
+
         self.__scroll_purchase_history.reset_checkboxes()
 
-        self.withdraw()
 
     def del_target_condition(self):
         """
@@ -267,8 +268,7 @@ class PurchaseHistory(ctk.CTkToplevel):
             return
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_purchase_history)
-
-        self.withdraw()
+        self.__confirmation_request_page.grab_set()
 
     def clear_button_click_handler(self) -> None:
         """
@@ -278,7 +278,8 @@ class PurchaseHistory(ctk.CTkToplevel):
 
         self.__confirmation_clear_page = ConfirmationClearScrollPlace(self, self.__scroll_purchase_history)
 
-        self.withdraw()
+        self.__confirmation_clear_page.grab_set()
+
 
     def restore_button_click_handler(self):
         """

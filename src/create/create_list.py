@@ -9,7 +9,7 @@ from PIL import Image
 
 class ScrollCreateList(ctk.CTkScrollableFrame):
     """
-    Класс- контейнер, формирует область со скролом для добавления товаров
+    Класс- контейнер, формирует область со скроллом для добавления товаров
     """
 
     def __init__(self, main_window, *args, **kwargs):
@@ -213,10 +213,17 @@ class ConfigCreateList(ctk.CTkFrame):
         """
         return self.__category_product.get()
 
+    def __get_category_list(self):
+        """
+        :return: Возвращает категорию товара
+        """
+        return self.__category_product
+
     name_shopping_list = property(__get_name_shopping_list)
     name_product = property(__get_name_product)
     count_product = property(__get_count_product)
     category = property(__get_category_product)
+    category_list = property(__get_category_list)
 
 
 class MenuButtonsCreateList(ctk.CTkFrame):
@@ -342,7 +349,9 @@ class CreateList(ctk.CTkToplevel):
         Обрабатывает клик по кнопке добавления новой категории товара
         """
         self.__add_category_page = AddNewCategory(self)
-        self.withdraw()
+
+        self.__add_category_page.grab_set()
+
 
     def update_load_data(self, old_text, new_text) -> None:
         """
@@ -373,7 +382,8 @@ class CreateList(ctk.CTkToplevel):
 
         self.__edit_product_page = EditProduct(self, self.__scroll_create_list)
 
-        self.withdraw()
+        self.__edit_product_page.grab_set()
+
 
     def del_target_condition(self) -> None:
         """
@@ -399,7 +409,8 @@ class CreateList(ctk.CTkToplevel):
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_create_list)
 
-        self.withdraw()
+        self.__confirmation_request_page.grab_set()
+
 
     def save_button_click_handler(self) -> None:
         """

@@ -213,7 +213,8 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         self.__add_product_page = AddProduct(self, self.__scroll_favorite)
 
-        self.withdraw()
+        self.__add_product_page.grab_set()
+
 
     def del_target_condition(self):
         """
@@ -241,7 +242,8 @@ class FavoriteProducts(ctk.CTkToplevel):
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_favorite)
 
-        self.withdraw()
+        self.__confirmation_request_page.grab_set()
+
 
     def clear_button_click_handler(self) -> None:
         """
@@ -251,7 +253,8 @@ class FavoriteProducts(ctk.CTkToplevel):
 
         self.__confirmation_clear_favorite_page = ConfirmationClearScrollPlace(self, self.__scroll_favorite)
 
-        self.withdraw()
+        self.__confirmation_clear_favorite_page.grab_set()
+
 
     def cancel_button_click_handler(self) -> None:
         """

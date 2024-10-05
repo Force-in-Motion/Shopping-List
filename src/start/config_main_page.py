@@ -47,4 +47,4 @@ ht_f = 600
 fgc_f = 'transparent'
 cr_f = 0
 
-path_logo = r'D:\Python\School\Проекты\Shopping-List\Images\logo.png'
+path_logo = r'Images\logo.png'

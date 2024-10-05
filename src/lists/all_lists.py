@@ -269,7 +269,8 @@ class AllLists(ctk.CTkToplevel):
 
         self.__edit_name_shopping_list_page = EditNameShoppingList(self, self.__scroll_all_lists)
 
-        self.withdraw()
+        self.__edit_name_shopping_list_page.grab_set()
+
 
     def del_target_condition(self):
         """
@@ -300,7 +301,8 @@ class AllLists(ctk.CTkToplevel):
 
         self.__confirmation_request_page = ConfirmationPage(self, self.__scroll_all_lists)
 
-        self.withdraw()
+        self.__confirmation_request_page.grab_set()
+
 
     def cancel_button_click_handler(self) -> None:
         """
