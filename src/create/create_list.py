@@ -68,7 +68,7 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
     def delete_checkbox(self) -> None:
         """
         Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
-        Удаляет чекбоксы из списка и удаляет их из окна
+        Обходит этот список и удаляет его элементы из скролл фрейма и из списка чекбоксов
         """
         for checkbox in self.create_list_select_checkboxes():
             checkbox.destroy()

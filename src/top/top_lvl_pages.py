@@ -92,21 +92,16 @@ class AddNewCategory(ctk.CTkToplevel):
 
 
 class EditNameShoppingList(AddNewCategory):
+    """
+    Класс, описывающий функционал окна верхнего уровня и его виджеты
+    """
     def __init__(self, main_window, scroll_all_lists, *args, **kwargs):
         super().__init__(main_window, *args, **kwargs)
         self.__main_window = main_window
         self.__scroll_all_lists = scroll_all_lists
 
         self.title(ttl_ensl)
-        self.__config_input_field()
 
-    def __config_input_field(self):
-        """
-        Формирует в себе поля ввода данных пользователя
-        """
-        self.__input_field = ctk.CTkEntry(self, placeholder_text=pht_ensl, placeholder_text_color=phtc_if,
-                                          width=wh_if, height=ht_if, fg_color=fgc_if, font=ft_if, text_color=tc_nsl)
-        self.__input_field.place(relx=0.05, rely=0.2)
 
     def save_button_click_handler(self) -> None:
         """
@@ -128,6 +123,7 @@ class EditNameShoppingList(AddNewCategory):
         self.__main_window.deiconify()
 
         self.destroy()
+
 
     def cancel_button_click_handler(self) -> None:
         """

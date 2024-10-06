@@ -13,6 +13,7 @@ class SaveAndLoadData:
         if not os.path.isdir(path_dir):
             os.mkdir(path_dir)
 
+
     @staticmethod
     def check_file_shopping_lists() -> bool:
         """
@@ -24,6 +25,7 @@ class SaveAndLoadData:
             return True
         else:
             return False
+
 
     @staticmethod
     def check_file_favorites_products() -> bool:
@@ -37,6 +39,7 @@ class SaveAndLoadData:
         else:
             return False
 
+
     @staticmethod
     def check_file_purchase_history() -> bool:
         """
@@ -49,6 +52,7 @@ class SaveAndLoadData:
         else:
             return False
 
+
     @staticmethod
     def read_data_with_shopping_lists() -> dict:
         """
@@ -57,6 +61,7 @@ class SaveAndLoadData:
         with open(path_dir + r'\shopping_lists.json', 'r') as f:
             load_data = json.load(f)
             return load_data
+
 
     @staticmethod
     def write_data_in_shopping_lists(load_data) -> bool:
@@ -68,6 +73,7 @@ class SaveAndLoadData:
             json.dump(load_data, f, ensure_ascii=False, indent=4)
             return True
 
+
     @staticmethod
     def read_data_with_favorites_products() -> dict:
         """
@@ -76,6 +82,7 @@ class SaveAndLoadData:
         with open(path_dir + r'\favorites_products.json', 'r') as f:
             load_data = json.load(f)
             return load_data
+
 
     @staticmethod
     def write_data_in_favorites_products(load_data) -> bool:
@@ -87,6 +94,7 @@ class SaveAndLoadData:
             json.dump(load_data, f, ensure_ascii=False, indent=4)
             return True
 
+
     @staticmethod
     def read_data_with_purchase_history() -> dict:
         """
@@ -95,6 +103,7 @@ class SaveAndLoadData:
         with open(path_dir + r'\purchase_history.json', 'r') as f:
             load_data = json.load(f)
             return load_data
+
 
     @staticmethod
     def write_data_in_purchase_history(load_data) -> bool:
@@ -106,6 +115,7 @@ class SaveAndLoadData:
             json.dump(load_data, f, ensure_ascii=False, indent=4)
             return True
 
+
     @staticmethod
     def read_categories() -> dict:
         """
@@ -114,6 +124,7 @@ class SaveAndLoadData:
         with open(path_categories, 'r') as f:
             load_data = json.load(f)
             return load_data
+
 
     @staticmethod
     def write_categories(load_data) -> bool:

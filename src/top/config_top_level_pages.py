@@ -8,7 +8,7 @@ ht_rzb = False
 
 
 'config_input_field'
-pht_if = 'Введите название категории'
+pht_if = 'Введите новое название'
 phtc_if = '#706C6C'
 tc_nsl = '#706C6C'
 wh_if = 350
@@ -45,7 +45,7 @@ ft_cb = ('Helvetica', 15, 'bold')
 
 '-------EditNameShoppingList-------'
 ttl_ensl = 'Редактирование названия списка'
-pht_ensl = 'Введите новое название списка'
+
 
 
 

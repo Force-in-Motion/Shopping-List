@@ -1,6 +1,8 @@
 from __future__ import annotations
 from src.favorite.config_favorite_products import *
-from src.top.top_lvl_pages import *
+from tkinter.messagebox import showerror
+from src.top.top_lvl_pages import ConfirmationClearScrollPlace, ConfirmationPage, AddProduct
+from src.load.save_and_load_data import SaveAndLoadData as sld
 import customtkinter as ctk
 from PIL import Image
 
@@ -83,7 +85,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     def delete_checkbox(self) -> None:
         """
         Внутри себя вызывает другую функцию, при помощи которой, получает список активных чекбоксов
-        Обходит этот список и удаляет его из этого списка, а так же из скролл фрейма и из списка чекбоксов
+        Обходит этот список и удаляет его элементы из скролл фрейма и из списка чекбоксов
         """
         for checkbox in self.create_list_select_checkboxes():
             checkbox.destroy()
@@ -170,7 +172,7 @@ class MenuButtonsFavoriteProducts(ctk.CTkFrame):
 
 class FavoriteProducts(ctk.CTkToplevel):
     """
-    Основной класс- контейнер этой страницы, содержит в себе фреймы и их виджеты, а так же основную логику страницы
+    Мэйн класс страницы, в себе формирует основные контейнеры (фреймы), содержащие остальные виджеты страницы, а так же основную логику страницы
     """
     def __init__(self, main_window):
         super().__init__()
@@ -234,7 +236,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__add_product_page.grab_set()
 
 
-    def del_target_condition(self):
+    def del_target_condition(self) -> None:
         """
         Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data

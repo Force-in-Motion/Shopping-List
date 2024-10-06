@@ -1,7 +1,10 @@
-from src.top.top_lvl_pages import *
-from src.open.config_open_list import *
+from __future__ import annotations
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
+
+from src.lists.all_lists import ScrollAllLists
+from src.top.top_lvl_pages import AddProduct, EditProduct, ConfirmationPage
+from src.open.config_open_list import *
 from PIL import Image
 from src.load.save_and_load_data import SaveAndLoadData as sld
 
@@ -10,7 +13,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для работы с добавленными товарами либо для добавления новых
     """
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window: OpenList, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
         self.__list_checkboxes = []
@@ -43,7 +46,8 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
 
             self.__list_checkboxes.append(product)
 
-    def create_checkbox(self, name_product, count_product, category) -> None:
+
+    def create_checkbox(self, name_product: str, count_product: int, category: str) -> None:
         """
         Создает чекбокс в скролл фрейме с переданными данными в качестве текста
         :param name_product: Принимает название продукта
@@ -57,30 +61,46 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
 
         self.__list_checkboxes.append(product)
 
-    def update_checkbox_place(self,  selected_category: str):
-
-        self.clear_scroll_frame()
-        # Создаем список только из тех товаров, у которых есть выбранная категория
-        sorted_products = [elem for elem in self.__main_window.list_products if selected_category in elem]
-
-        if not sorted_products:
-            showerror('Ошибка', 'Товары с выбранной категорией отсутствуют')
-
-            # Восстанавливаем все товары, если выбранная категория отсутствует
+    def return_all_checkboxes(self) -> None:
+            """
+            Возвращает все скрытые чекбоксы в скролл фрейм
+            """
             for elem in self.__main_window.list_products:
                 product = ctk.CTkCheckBox(self, text=f'{", ".join(elem)}', font=ft_sl,
                                           hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
                 product.grid(sticky="w", padx=(10, 0), pady=10)
-                self.__list_checkboxes.append(product)
-            return
 
+                self.__list_checkboxes.append(product)
+
+
+    def load_checkboxes_for_selected_category(self, sorted_products: list [list]):
+        """
+        Загружает во фпейм только те чекбоксы, у которых есть выбранная категория
+        """
         for elem in sorted_products:
-            # Загружаем только те товары, у которых есть выбранная категория, если такие есть
             product = ctk.CTkCheckBox(self, text=f'{', '.join(elem)}', font=ft_sl,
                                       hover_color=hc_sl, fg_color=fgc_sl, border_width=bw_sl)
             product.grid(sticky="w", padx=(10, 0), pady=10)
 
             self.__list_checkboxes.append(product)
+
+
+    def update_checkbox_place(self,  selected_category: str) -> None:
+        """
+        Сортирует чекбоксы по выбранной категории, если товар с выбранной категорией есть в скролле то уберутся все чекбоксы кроме тех
+        У которых есть выбранная категория, если же выбранной категории нет в списке, то отобразятся все товары списка, со всеми категориями
+        """
+        self.clear_scroll_frame()
+
+        sorted_products = [elem for elem in self.__main_window.list_products if selected_category in elem]
+
+        if not sorted_products:
+            showerror('Ошибка', 'Товары с выбранной категорией отсутствуют')
+
+            self.return_all_checkboxes()
+
+        self.load_checkboxes_for_selected_category(sorted_products)
+
 
     def set_new_text_for_checkbox(self, checkbox,  new_text) -> None:
         """
@@ -92,7 +112,8 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         if checkbox is not None:
             checkbox.configure(text=new_text)
 
-    def create_list_select_checkboxes(self) -> list:
+
+    def create_list_select_checkboxes(self) -> list[ctk.CTkCheckBox]:
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
         :return: Возвращает список активных чекбоксов
@@ -101,7 +122,8 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
 
         return list_select_checkboxes
 
-    def create_list_text_select_checkbox(self):
+
+    def create_list_text_select_checkbox(self) -> list[str]:
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
         :return: Возвращает список текста активных чекбоксов
@@ -109,6 +131,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
 
         return list_select_texts
+
 
     def delete_checkbox(self) -> None:
         """
@@ -119,6 +142,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
             checkbox.destroy()
             self.__list_checkboxes.remove(checkbox)
 
+
     def clear_scroll_frame(self) -> None:
         """
         Удаляет все чекбоксы из скролл фрейма.
@@ -126,6 +150,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         for checkbox in self.__list_checkboxes:
             checkbox.destroy()
         self.__list_checkboxes.clear()
+
 
     def check_selected_checkbox(self) -> bool:
         """
@@ -137,7 +162,8 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def get_selected_checkbox(self) -> (str, object) or (None, None):
+
+    def get_selected_checkbox(self) -> (str, ctk.CTkCheckBox) or (None, None):
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
@@ -148,6 +174,7 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
                 return checkbox.cget("text"), checkbox
         return None, None
 
+
     def reset_checkboxes(self) -> None:
         """
         Снимает галочки со всех чекбоксов.
@@ -155,28 +182,39 @@ class ScrollOpenListProducts(ctk.CTkScrollableFrame):
         for checkbox in self.__list_checkboxes:
             checkbox.deselect()
 
-    def __get_count_checkboxes(self):
+
+    def __get_count_checkboxes(self) -> int:
         """
         :return: Возвращает количество чекбоксов в списке
         """
         return len(self.__list_checkboxes)
 
-    def __get_list_name(self):
+
+    def __get_list_name(self) -> str:
+        """
+        :return: Возвращает имя списка
+        """
         return self.__list_name
 
-    def __get_list_checkboxes(self):
+
+    def __get_list_checkboxes(self) -> list[ctk.CTkCheckBox]:
+        """
+        :return: Возвращает список чекбоксов во фрейме
+        """
         return self.__list_checkboxes
+
 
     list_checkboxes = property(__get_list_checkboxes)
     list_name = property(__get_list_name)
     count_checkboxes = property(__get_count_checkboxes)
 
 
+
 class MenuButtonsOpenList(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window: OpenList, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
         self.__label_add_product = None
@@ -192,6 +230,7 @@ class MenuButtonsOpenList(ctk.CTkFrame):
         self.__add_product_label_in_list = ctk.CTkLabel(self, text_color=tc_apl, text=tt_apl, font=ft_apl)
         self.__add_product_label_in_list.place(relx=0.1, rely=0.14)
 
+
     def __config_label_add_product_in_favorite(self) -> None:
         """
         Формирует в себе текст, описывающий функционал кнопки добавления нового товара
@@ -199,9 +238,10 @@ class MenuButtonsOpenList(ctk.CTkFrame):
         self.__add_product_label_in_favorite = ctk.CTkLabel(self, text_color=tc_f, text=tt_f, font=ft_f)
         self.__add_product_label_in_favorite.place(relx=0.44, rely=0.14)
 
+
     def __config_menu_buttons(self) -> None:
         """
-        Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
+        Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же устанавливает его параметры и стили
         """
         self.__add_product_image = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_api)
         self.__add_product = ctk.CTkButton(self, image=self.__add_product_image, width=wh_ap, height=ht_ap, text=tt_ap,
@@ -230,6 +270,7 @@ class MenuButtonsOpenList(ctk.CTkFrame):
                                           text_color=tc_cb, border_width=bw_cb, hover_color=hc_cb, font=ft_cb)
         self.__cancel_btn.configure(command=self.__main_window.cancel_button_click_handler)
         self.__cancel_btn.place(relx=0.705, rely=0.65)
+
 
 
 class OpenList(ctk.CTkToplevel):
@@ -270,6 +311,7 @@ class OpenList(ctk.CTkToplevel):
         self.geometry(gt_cw)
         self.resizable(rzb_wh, rzb_ht)
 
+
     def __config_logo(self) -> None:
         """
         Формирует параметры и стили главного логотипа приложения
@@ -278,12 +320,14 @@ class OpenList(ctk.CTkToplevel):
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.69, rely=0.05)
 
+
     def __config_scroll_frame(self) -> None:
         """
         Формирует параметры и стили контейнера для добавления товаров
         """
         self.__scroll_open_list = ScrollOpenListProducts(self, master=self, width=wh_sf, height=ht_sf, fg_color=fgc_sf, corner_radius=cr_sf)
         self.__scroll_open_list.place(relx=0.04, rely=0.05)
+
 
     def __config_menu_buttons(self) -> None:
         """
@@ -292,7 +336,11 @@ class OpenList(ctk.CTkToplevel):
         self.__menu_btn_open_list = MenuButtonsOpenList(self, master=self, width=wh_mb, height=ht_mb, fg_color=fgc_mb, corner_radius=cr_mb)
         self.__menu_btn_open_list.place(relx=0, rely=0.6)
 
-    def __config_menu_sorted(self):
+
+    def __config_menu_sorted(self) -> None:
+        """
+        Формирует параметры и стили алгоритма сортировки товаров и ее визуал
+        """
         self.__sort_label = ctk.CTkLabel(self, text_color=tc_slb, text=tt_slb, font=ft_slb)
         self.__sort_label.place(relx=0.69, rely=0.4)
 
@@ -308,6 +356,7 @@ class OpenList(ctk.CTkToplevel):
         self.__sort_products.configure(command=self.sort_button_click_handler)
         self.__sort_products.place(relx=0.91, rely=0.46)
 
+
     def add_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке сохранения списка покупок
@@ -317,7 +366,7 @@ class OpenList(ctk.CTkToplevel):
         self.__add_product_page.grab_set()
 
 
-    def update_load_data(self, old_text, new_text) -> None:
+    def update_load_data(self, old_text: str, new_text: str) -> None:
         """
         Обходит матрицу продуктов, сравнивает полученный текст из чекбокса, если они совпадают то меняет по индесу старый продукт на новый
         :param old_text: Старый текст чекбокса, до редактирования
@@ -333,6 +382,7 @@ class OpenList(ctk.CTkToplevel):
         self.__load_data[self.__scroll_open_list.list_name] = self.__list_products
 
         sld.write_data_in_shopping_lists(self.__load_data)
+
 
     def edit_button_click_handler(self) -> None:
         """
@@ -367,7 +417,8 @@ class OpenList(ctk.CTkToplevel):
 
         self.__scroll_open_list.update_checkbox_place(selected_category)
 
-    def del_target_condition(self):
+
+    def del_target_condition(self) -> None:
         """
         Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
@@ -382,6 +433,7 @@ class OpenList(ctk.CTkToplevel):
         self.__load_data[self.__scroll_open_list.list_name] = self.__list_products
 
         sld.write_data_in_shopping_lists(self.__load_data)
+
 
     def del_button_click_handler(self) -> None:
         """
@@ -422,6 +474,7 @@ class OpenList(ctk.CTkToplevel):
 
         self.__scroll_open_list.reset_checkboxes()
 
+
     def cancel_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке возврата на предыдущую страницу
@@ -430,17 +483,34 @@ class OpenList(ctk.CTkToplevel):
 
         self.destroy()
 
-    def __get_scroll_all_lists(self):
+
+    def __get_scroll_all_lists(self) -> ScrollAllLists:
+        """
+        Возвращает объект класса ScrollAllLists
+        """
         return self.__scroll_all_lists
 
-    def __get_list_products(self):
+
+    def __get_list_products(self) -> list[list[str]]:
+        """
+        Возвращает текущий список продуктов
+        """
         return self.__list_products
 
-    def __get_load_data(self):
+
+    def __get_load_data(self) -> dict:
+        """
+        Возвращает текущий словарь с данными о списках покупок
+        """
         return self.__load_data
 
-    def __get_category_product(self):
+
+    def __get_category_product(self) -> ctk.CTkComboBox:
+        """
+        Возвращает объект класса CtkComboBox, который отвечает за категории продуктов
+        """
         return self.__category_product
+
 
     category_product = property(__get_category_product)
     load_data = property(__get_load_data)

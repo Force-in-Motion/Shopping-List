@@ -62,7 +62,5 @@ fgc_sl = '#434141'
 bw_sl = 1
 
 
-
-
 path_logo = r'Images\logo.png'
 path_round_button = r'Images\round_button.png'
