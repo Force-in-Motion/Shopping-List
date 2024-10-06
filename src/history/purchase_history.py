@@ -43,7 +43,8 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
 
         return list_select_checkboxes
 
-    def create_list_text_select_checkbox(self):
+
+    def create_list_text_select_checkbox(self) -> list [str]:
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
         :return: Возвращает список текста активных чекбоксов
@@ -52,9 +53,10 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
 
         return list_select_texts
 
-    def check_selected_checkbox(self) -> (str, object) or bool:
+
+    def check_selected_checkbox(self) -> bool:
         """
-        Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет True,
         Если в списке нет активных чекбоксов то возвращает False
         """
         for checkbox in self.__list_checkboxes:
@@ -62,9 +64,10 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
                 return True
         return False
 
-    def get_selected_checkbox(self) -> (str, object) or bool:
+
+    def get_selected_checkbox(self) -> (str, ctk.CTkCheckBox) or bool:
         """
-        Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и ссылки на него,
+        Обходит список чекбоксов, определяет активный чекбокс если такой имеется и возвращает кортеж из его текста и самого чекбокса,
         Если в списке нет активных чекбоксов то возвращает кортеж (None, None)
         :return:
         """
@@ -72,6 +75,7 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
             if checkbox.get() == 1:
                 return checkbox.cget("text"), checkbox
         return None, None
+
 
     def delete_checkbox(self) -> None:
         """
@@ -82,6 +86,7 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
             checkbox.destroy()
             self.__list_checkboxes.remove(checkbox)
 
+
     def reset_checkboxes(self) -> None:
         """
         Снимает галочки со всех чекбоксов.
@@ -89,6 +94,7 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
         for checkbox in self.__list_checkboxes:
             if self.check_selected_checkbox():
                 checkbox.deselect()
+
 
     def clear_scroll_frame(self) -> None:
         """
@@ -98,17 +104,23 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
             checkbox.destroy()
         self.__list_checkboxes.clear()
 
-    def __get_count_checkboxes(self):
+
+    def __get_count_checkboxes(self) -> int:
         """
         :return: Возвращает количество чекбоксов в списке
         """
         return len(self.__list_checkboxes)
 
-    def __get_list_checkboxes(self):
+
+    def __get_list_checkboxes(self) -> list [ctk.CTkCheckBox]:
+        """
+        Возвращает список чекбоксов
+        """
         return self.__list_checkboxes
 
     list_checkboxes = property(__get_list_checkboxes)
     count_checkboxes = property(__get_count_checkboxes)
+    
 
 
 class ButtonsMenuPurchaseHistory(ctk.CTkFrame):
