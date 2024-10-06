@@ -1,8 +1,7 @@
 from __future__ import annotations
+from src.lists.all_lists import *
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
-
-from src.lists.all_lists import ScrollAllLists
 from src.top.top_lvl_pages import AddProduct, EditProduct, ConfirmationPage
 from src.open.config_open_list import *
 from PIL import Image

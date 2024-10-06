@@ -10,6 +10,9 @@ import sys
 
 
 class MainFrame(ctk.CTkFrame):
+    """
+    Класс, реализующий главное окно приложения
+    """
     def __init__(self, main_window, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
@@ -18,9 +21,10 @@ class MainFrame(ctk.CTkFrame):
         self.__config_menu_buttons()
         self.__config_exit_button()
 
+
     def __config_menu_buttons(self) -> None:
         """
-        Формирует в себе кнопки, отвечающие за общий функционал приложения, а так же их обработчики и и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
+        Формирует в себе кнопки, отвечающие за общий функционал приложения, а так же устанавливает его параметры и стили
         """
         self.__add_list = ctk.CTkButton(self, text=al_tt, width=wh_al, fg_color=fgc_mf, border_color=bc_mf,
                                       height=ht_mf, text_color=tc_mf, border_width=bw_m, hover_color=hc_mf, font=ft_mf)
@@ -42,6 +46,7 @@ class MainFrame(ctk.CTkFrame):
         self.__history.place(relx=0.7, rely=0.55)
         self.__history.configure(command=self.__main_window.history_button_click_handler)
 
+
     def __config_exit_button(self) -> None:
         """
         Формирует в себе кнопку, отвечающую за выход из приложения и устанавливает ее в указанное место окна, а так же устанавливает его параметры и стили
@@ -50,6 +55,7 @@ class MainFrame(ctk.CTkFrame):
         self.__exit.place(relx=0.38, rely=0.85)
         self.__exit.configure(command=sys.exit)
 
+
     def __config_logo(self) -> None:
         """
         Устанавливает логотип приложения в указанное место окна, а так же устанавливает его параметры и стили
@@ -57,6 +63,7 @@ class MainFrame(ctk.CTkFrame):
         self.__logo = ctk.CTkImage(light_image=Image.open(path_logo), size=size)
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=l_tt)
         self.__image_label.place(relx=0.7, rely=0.1)
+
 
 
 class MainPage(ctk.CTk):
@@ -75,6 +82,7 @@ class MainPage(ctk.CTk):
         self.__config_window()
         self.__config_main_frame()
 
+
     def __config_window(self) -> None:
         """
         Формирует параметры и стили главного окна приложения
@@ -83,40 +91,55 @@ class MainPage(ctk.CTk):
         self.geometry(gmt)
         self.resizable(rsb_wh, rsb_ht)
 
+
     def __config_main_frame(self):
+        """
+        Формирует основной контейнер (фрейм) содержащий остальные виджеты страницы
+        """
         self.__main_frame = MainFrame(self, master=self, width=wh_f, height=ht_f, fg_color=fgc_f, corner_radius=cr_f)
         self.__main_frame.pack()
         self.__main_frame.pack_propagate(False)
+
 
     def add_list_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке добавления список покупок
         """
         self.__add_list_page = CreateList(self)
+
         self.withdraw()
+
 
     def all_lists_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "мои списки"
         """
         self.__all_lists_page = AllLists(self)
+
         self.withdraw()
+
 
     def favorites_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "избранное"
         """
-
         self.__favorite_products_page = FavoriteProducts(self)
+
         self.withdraw()
+
 
     def history_button_click_handler(self) -> None:
         """
         Обрабатывает клик по кнопке "история покупок"
         """
         self.__history_page = PurchaseHistory(self)
+
         self.withdraw()
 
+
     def run_program(self):
+        """
+        Запускает приложение
+        """
         self.mainloop()
 
