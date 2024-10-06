@@ -1,5 +1,6 @@
+from __future__ import annotations
 from src.history.config_purchase_history import *
-from src.open.open_list import *
+from src.top.top_lvl_pages import *
 from src.load.save_and_load_data import SaveAndLoadData as sld
 from tkinter.messagebox import showerror, showinfo
 import customtkinter as ctk
@@ -10,7 +11,7 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для работы с добавленными товарами
     """
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window: PurchaseHistory, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
@@ -32,7 +33,8 @@ class ScrollPurchaseHistory(ctk.CTkScrollableFrame):
 
             self.__list_checkboxes.append(shopping_list)
 
-    def create_list_select_checkboxes(self) -> list:
+
+    def create_list_select_checkboxes(self) -> list [ctk.CTkCheckBox] :
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
         :return: Возвращает список активных чекбоксов
@@ -287,7 +289,7 @@ class PurchaseHistory(ctk.CTkToplevel):
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
         Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
         """
-        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Удалять нечего')
+        assert self.__scroll_purchase_history.count_checkboxes != 0, showerror('Ошибка', 'Список пуст. Восстанавливать нечего')
 
         if not self.__scroll_purchase_history.check_selected_checkbox():
             showerror('Ошибка', 'Выберите список для восстановления')

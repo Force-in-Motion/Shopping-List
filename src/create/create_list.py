@@ -210,28 +210,28 @@ class ConfigCreateList(ctk.CTkFrame):
 
     def __get_name_shopping_list(self) -> ctk.CTkEntry:
         """
-        :return: Возвращает название списка покупок
+        :return: Возвращает объект класса CTkEntry для названия списка покупок
         """
         return self.__name_shopping_list
 
 
     def __get_name_product(self) -> ctk.CTkEntry:
         """
-        :return: Возвращает название товара покупок
+        :return: Возвращает объект класса CTkEntry для названия товара
         """
         return self.__name_product
 
 
     def __get_count_product(self) -> ctk.CTkEntry:
         """
-        :return: Возвращает количество товара
+        :return: Возвращает объект класса CTkEntry для количества товара
         """
         return self.__count_product
 
 
     def __get_category_product(self) -> ctk.CTkComboBox:
         """
-        :return: Возвращает категорию товара
+        :return: Возвращает объект класса CTkComboBox для категории товара
         """
         return self.__category_product
 
@@ -476,20 +476,20 @@ class CreateList(ctk.CTkToplevel):
 
     def __get_scroll_frame(self) -> ScrollCreateList:
         """
-        :return: Возвращает ссылку на скролл фрейм
+        :return: Возвращает объект класса ScrollCreateList
         """
         return self.__scroll_create_list
 
 
     def __get_list_products(self) -> list[list[str]]:
         """
-        :return: Возвращает ссылку на список продуктов
+        :return: Возвращает список продуктов в виде матрицы
         """
         return self.__list_products
 
     def __get_data_create_list(self) -> ConfigCreateList:
         """
-        :return: Возвращает ссылку на data_create_list
+        :return: Возвращает объект класса ConfigCreateList
         """
         return self.__data_create_list
 

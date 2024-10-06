@@ -49,7 +49,7 @@ ft_cab = ('Helvetica', 15, 'bold')
 
 'config window'
 ttl = 'Ибранное'
-gt = '900x700+700+100'
+gt = '900x700+600+100'
 
 
 'config logo'

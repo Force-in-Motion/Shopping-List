@@ -1,3 +1,4 @@
+from __future__ import annotations
 from src.favorite.config_favorite_products import *
 from src.top.top_lvl_pages import *
 import customtkinter as ctk
@@ -8,12 +9,13 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     """
     Класс- контейнер, формирует область со скролом для добавления товаров
     """
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window: FavoriteProducts, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
         self.__list_checkboxes = []
 
         self.__load_checkbox_products()
+
 
     def __load_checkbox_products(self) -> None:
         """
@@ -31,7 +33,8 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
 
             self.__list_checkboxes.append(product)
 
-    def create_checkbox(self, name_product, count_product, category) -> None:
+
+    def create_checkbox(self, name_product: str, count_product: int, category: str) -> None:
         """
         Создает чекбокс в скролл фрейме с переданными данными в качестве текста
         :param name_product: Принимает название продукта
@@ -45,6 +48,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
 
         self.__list_checkboxes.append(product)
 
+
     def check_selected_checkbox(self) -> bool:
         """
         Обходит список чекбоксов, определяет активный чекбокс если такой имеется вернет return,
@@ -56,7 +60,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
         return False
 
 
-    def create_list_select_checkboxes(self) -> list:
+    def create_list_select_checkboxes(self) -> list[ctk.CTkCheckBox]:
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список только из активных чекбоксов
         :return: Возвращает список активных чекбоксов
@@ -66,7 +70,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
         return list_select_checkboxes
 
 
-    def create_list_text_select_checkbox(self):
+    def create_list_text_select_checkbox(self) -> list[str]:
         """
         Обходит список чекбоксов скролл фрейма и формирует новый список из текста только активных чекбоксов
         :return: Возвращает список текста активных чекбоксов
@@ -74,6 +78,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
         list_select_texts = [checkbox.cget("text") for checkbox in self.__list_checkboxes if checkbox.get() == 1]
 
         return list_select_texts
+
 
     def delete_checkbox(self) -> None:
         """
@@ -84,6 +89,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
             checkbox.destroy()
             self.__list_checkboxes.remove(checkbox)
 
+
     def clear_scroll_frame(self) -> None:
         """
         Удаляет все чекбоксы из скролл фрейма.
@@ -92,6 +98,7 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
             checkbox.destroy()
         self.__list_checkboxes.clear()
 
+
     def reset_checkboxes(self) -> None:
         """
         Снимает галочки со всех чекбоксов.
@@ -99,7 +106,8 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
         for checkbox in self.__list_checkboxes:
             checkbox.deselect()
 
-    def __get_list_checkboxes(self):
+
+    def __get_list_checkboxes(self) -> list[ctk.CTkCheckBox]:
         return self.__list_checkboxes
 
     def __get_count_checkboxes(self):
@@ -112,11 +120,12 @@ class ScrollFavoriteProducts(ctk.CTkScrollableFrame):
     count_checkboxes = property(__get_count_checkboxes)
 
 
+
 class MenuButtonsFavoriteProducts(ctk.CTkFrame):
     """
     Класс- контейнер, формирует область с кнопками, отвечающими за функционал страницы
     """
-    def __init__(self, main_window, *args, **kwargs):
+    def __init__(self, main_window: FavoriteProducts, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__main_window = main_window
 
@@ -134,7 +143,7 @@ class MenuButtonsFavoriteProducts(ctk.CTkFrame):
 
     def __config_menu_buttons(self) -> None:
         """
-        Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же их обработчики и устанавливает их в указанное место окна, а так же устанавливает его параметры и стили
+        Формирует в себе кнопки, отвечающие за общий функционал страницы, а так же устанавливает их параметры и стили
         """
         self.__add_product_image = ctk.CTkImage(light_image=Image.open(path_round_button), size=size_ali)
         self.__add_product = ctk.CTkButton(self, image=self.__add_product_image, width=wh_alb, height=ht_alb,
@@ -158,7 +167,11 @@ class MenuButtonsFavoriteProducts(ctk.CTkFrame):
         self.__cancel_btn.place(relx=0.705, rely=0.65)
 
 
+
 class FavoriteProducts(ctk.CTkToplevel):
+    """
+    Основной класс- контейнер этой страницы, содержит в себе фреймы и их виджеты, а так же основную логику страницы
+    """
     def __init__(self, main_window):
         super().__init__()
         self.__main_window = main_window
@@ -178,12 +191,14 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__config_scroll_frame()
         self.__config_menu_buttons()
 
+
     def __config_window(self) -> None:
         """
         Формирует параметры и стили главного окна приложения
         """
         self.title(ttl)
         self.geometry(gt)
+
 
     def __config_logo(self) -> None:
         """
@@ -193,6 +208,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__image_label = ctk.CTkLabel(self, image=self.__logo, text=tt_l)
         self.__image_label.place(relx=0.69, rely=0.05)
 
+
     def __config_scroll_frame(self) -> None:
         """
         Формирует параметры и стили контейнера для добавления покупок
@@ -200,12 +216,14 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__scroll_favorite = ScrollFavoriteProducts(self, master=self, width=wh_sp, height=ht_sp, fg_color=fgc_sp, corner_radius=cr_sp)
         self.__scroll_favorite.place(relx=0.04, rely=0.05)
 
+
     def __config_menu_buttons(self) -> None:
         """
         Формирует параметры и стили контейнера кнопок
         """
         self.__menu_btn_favorite = MenuButtonsFavoriteProducts(self, master=self, width=wh_bm, height=ht_bm, fg_color=fgc_bm, corner_radius=cr_bm)
         self.__menu_btn_favorite.place(relx=0, rely=0.6)
+
 
     def add_button_click_handler(self):
         """
@@ -220,7 +238,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         """
         Внутри себя вызывает другую функцию, при помощи которой, получает список текстов активных чекбоксов
         Т.к. каждый элемент списка текстов активных чекбоксов является ключем словаря __load_data
-        Поэтому в цикле мы удаляем каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписываем данные
+        Поэтому в цикле удаляет каждый ключ, который содержится в списке текстов активных чекбоксов и затем перезаписывает данные
         """
         for product_to_remove in self.__scroll_favorite.create_list_text_select_checkbox():
 
@@ -229,6 +247,7 @@ class FavoriteProducts(ctk.CTkToplevel):
         self.__load_data_favorites["f"] = self.__list_products
 
         sld.write_data_in_favorites_products(self.__load_data_favorites)
+
 
     def del_button_click_handler(self) -> None:
         """
@@ -261,16 +280,30 @@ class FavoriteProducts(ctk.CTkToplevel):
         Обрабатывает клик по кнопке возврата в предыдущее меню
         """
         self.__main_window.deiconify()
+
         self.destroy()
 
-    def __get_scroll_favorite(self):
+
+    def __get_scroll_favorite(self) -> ScrollFavoriteProducts:
+        """
+        Возвращает объект класса ScrollFavoriteProducts
+        """
         return self.__scroll_favorite
 
-    def __get_load__data_favorites(self):
+
+    def __get_load__data_favorites(self) -> dict:
+        """
+        Возвращает словарь с данными из файла favorites_products.json
+        """
         return self.__load_data_favorites
 
-    def __get_list_products(self):
+
+    def __get_list_products(self) -> list [str]:
+        """
+        Возвращает список продуктов из избранного
+        """
         return self.__list_products
+
 
     list_products = property(__get_list_products)
     load_data_favorites = property(__get_load__data_favorites)
