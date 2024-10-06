@@ -74,7 +74,7 @@ fgc_bm = '#CD5C5C'
 tt_s = "Сохранить"
 tt_e = "Редактировать"
 tt_d = "Удалить"
-tt_c = "Отмена"
+tt_c = "Назад"
 
 
 '-------CreateList-------'
@@ -103,12 +103,12 @@ fg_bm = 'transparent'
 cr_bm = 0
 
 
-
 '-------ScrollAddProducts-------'
 ft_p = ('Helvetica', 18, 'bold')
 hc_p = '#453E3E'
 fgc_p = '#434141'
 bw_p = 1
+
 
 path_logo = r'Images\logo.png'
 path_round_button = r'Images\round_button.png'

@@ -73,7 +73,7 @@ class AddNewCategory(ctk.CTkToplevel):
 
         self.__main_window.deiconify()
 
-        self.__main_window.data_create_list.category_list.configure(values=self.__list_categories.get("cs"))
+        self.__main_window.data_create_list.category.configure(values=self.__list_categories.get("cs"))
 
         self.destroy()
 
