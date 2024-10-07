@@ -12,7 +12,7 @@ bw_m = 1
 ol_tt = "Открыть"
 el_tt = "Редактировать"
 dl_tt = "Удалить"
-cl_tt = "Отмена"
+cl_tt = "Назад"
 
 'config add list button'
 size_alb = (40, 40)

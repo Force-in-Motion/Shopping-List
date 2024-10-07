@@ -35,7 +35,7 @@ hc_cb = '#783D3D'
 ft_cb = ('Helvetica', 15, 'bold')
 
 
-tt_cab = "Отмена"
+tt_cab = "Назад"
 wh_cab = 220
 ht_cab = 50
 fgc_cab = '#CD5C5C'

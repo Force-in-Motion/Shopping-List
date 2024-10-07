@@ -137,9 +137,11 @@ class MainPage(ctk.CTk):
         self.withdraw()
 
 
-    def run_program(self):
+    def run_program(self) -> None:
         """
-        Запускает приложение
+        Запускает главное окно приложения
         """
+        self.lift()
+        self.attributes('-topmost', True)
         self.mainloop()
 

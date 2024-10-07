@@ -19,6 +19,7 @@ class ScrollCreateList(ctk.CTkScrollableFrame):
         self.__main_window = main_window
         self.__list_checkboxes = []
 
+
     def create_checkbox(self, name_product: str, count_product: int, category: str) -> None:
         """
         Создает чекбокс в скролл фрейме с переданными данными в качестве текста

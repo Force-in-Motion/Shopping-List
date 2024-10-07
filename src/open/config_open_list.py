@@ -54,7 +54,7 @@ bw_dp = 1
 hc_dp = '#783D3D'
 ft_dp = ('Helvetica', 15, 'bold')
 
-tt_cb = "Отмена"
+tt_cb = "Назад"
 wh_cb = 220
 ht_cb = 50
 fgc_cb = '#CD5C5C'
