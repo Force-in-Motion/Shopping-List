@@ -1,6 +1,6 @@
 import pytest
 import customtkinter as ctk
-from src.create.create_list import ScrollCreateList, CreateList
+from src.create.create_list import ScrollCreateList, CreateList, ConfigCreateList
 from src.start.main_page import MainPage
 
 
@@ -11,6 +11,9 @@ create_list = CreateList(start_window)
 scroll_create_list = ScrollCreateList(create_list, create_list)
 
 checkbox = ctk.CTkCheckBox(scroll_create_list)
+
+
+
 
 
 
@@ -40,6 +43,7 @@ def fills_list_checkboxes():
     return scroll_create_list.list_checkboxes.extend([checkbox_1, checkbox_2, checkbox_3, checkbox_4, checkbox_5, checkbox_6, checkbox_7])
 
 
+#================================================================ ScrollCreateList ======================================================================
 
 data_test_scl_create_checkbox = [( 'ананас', 4, 'Продукты питания', None),
                                  ( 'кочерга', 4, 'Инструменты', None),
@@ -117,9 +121,9 @@ def test_delete_checkbox(fills_list_checkboxes):
 
     scroll_create_list.delete_checkbox()
 
-    initial_count = scroll_create_list.count_checkboxes
+    current_count = scroll_create_list.count_checkboxes
 
-    assert initial_count == 8
+    assert current_count == 8
 
 
 @pytest.mark.SCL_check_select_checkboxes
@@ -157,6 +161,30 @@ def test_get_select_checkboxes(fills_list_checkboxes):
     assert scroll_create_list.get_selected_checkbox() == (None, None)
 
 
+@pytest.mark.SCL_reset_checkboxes
+def test_reset_checkboxes(fills_list_checkboxes):
+    """
+    Проверяет работу функции сброса чекбоксов и проверяет, что чекбоксы сняты с выбора
+    """
+    for i in scroll_create_list.list_checkboxes:
+        i.select()
+
+    assert scroll_create_list.check_selected_checkbox() is True
+
+    scroll_create_list.reset_checkboxes()
+
+    assert scroll_create_list.check_selected_checkbox() is False
+
+
+@pytest.mark.SCL_count_checkboxes
+def test_get_count_checkboxes(fills_list_checkboxes):
+    """
+    Проверяет работу функции получения количества чекбоксов и проверяет, что оно верно считает чекбоксы
+    """
+    assert scroll_create_list.count_checkboxes == 8
+
+
+# ================================================= CreateList ====================================================================================
 
 
 
