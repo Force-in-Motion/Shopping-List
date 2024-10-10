@@ -13,6 +13,7 @@ scroll_create_list = ScrollCreateList(create_list, create_list)
 checkbox = ctk.CTkCheckBox(scroll_create_list)
 
 
+
 @pytest.fixture(scope='session')
 def fills_list_checkboxes():
     checkbox_1 = ctk.CTkCheckBox(scroll_create_list, text='кочерга, 4, Инструменты')
@@ -36,7 +37,7 @@ def fills_list_checkboxes():
     checkbox_7 = ctk.CTkCheckBox(scroll_create_list, text='ружье, 4, Охота')
     checkbox_7.select()
 
-    scroll_create_list.list_checkboxes.extend([checkbox_1, checkbox_2, checkbox_3, checkbox_4, checkbox_5, checkbox_6, checkbox_7])
+    return scroll_create_list.list_checkboxes.extend([checkbox_1, checkbox_2, checkbox_3, checkbox_4, checkbox_5, checkbox_6, checkbox_7])
 
 
 
@@ -79,7 +80,6 @@ def test_set_new_text_for_checkbox(val1, val2, expect_result):
     assert val1.cget("text")!= old_text_checkbox
 
 
-
 @pytest.mark.SCL_list_select_checkboxes
 def test_create_list_select_checkboxes(fills_list_checkboxes):
     """
@@ -91,7 +91,6 @@ def test_create_list_select_checkboxes(fills_list_checkboxes):
         assert type(i) == ctk.CTkCheckBox
 
     assert len(result) == 4
-
 
 
 @pytest.mark.SCL_list_text_select_checkboxes
@@ -128,7 +127,34 @@ def test_check_select_checkboxes(fills_list_checkboxes):
     """
     Проверяет работу функции проверки чекбоксов и создания списка активных чекбоксов, а так же проверяет, что чекбоксы отмечены
     """
-    assert scroll_create_list.check_selected_checkbox() == True if checkbox.get() == 1 else False
+    for i in scroll_create_list.list_checkboxes:
+        i.select()
+
+    assert scroll_create_list.check_selected_checkbox() is True
+
+    scroll_create_list.reset_checkboxes()
+
+    assert scroll_create_list.check_selected_checkbox() is False
+
+
+@pytest.mark.SCL_get_select_checkboxes
+def test_get_select_checkboxes(fills_list_checkboxes):
+    """
+    Проверяет работу функции получения чекбоксов и возвращения текста активных чекбоксов или вернет (None, None)
+    """
+    for i in scroll_create_list.list_checkboxes:
+        i.select()
+
+    text, elem = scroll_create_list.get_selected_checkbox()
+
+    assert text == 'ананас, 4, Продукты питания'
+
+    assert elem == scroll_create_list.list_checkboxes[0]
+
+    for i in scroll_create_list.list_checkboxes:
+        i.deselect()
+
+    assert scroll_create_list.get_selected_checkbox() == (None, None)
 
 
 
@@ -146,25 +172,3 @@ def test_check_select_checkboxes(fills_list_checkboxes):
 
 
 
-
-
-
-
-
-
-
-
-
-# data_test_scl_create_checkbox_negative = [( int, int, int, pytest.raises(TypeError)),
-#                                           ( str, int, int, pytest.raises(TypeError)),
-#                                           ( int, None, int, pytest.raises(TypeError)),
-#                                           ( str, None, str, pytest.raises(TypeError)),
-#                                           ( None, None, None, pytest.raises(TypeError)),
-#                                           ( [None], [], dict, pytest.raises(TypeError)),
-#                                           ( dict, [], str, pytest.raises(TypeError)),]
-#
-# @pytest.mark.SCL_create_checkbox_neg
-# @pytest.mark.parametrize('val1, val2, val3, expect_result', data_test_scl_create_checkbox_negative)
-# def test_create_checkbox_negative(val1, val2, val3, expect_result):
-#     with expect_result:
-#         scroll_create_list.create_checkbox(val1, val2, val3) is None
